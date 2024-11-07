@@ -77,8 +77,20 @@ public partial class Metadata
         public int InformerId { get; set; }
         public int ResponsibleId { get; set; }
         public int StatusId { get; set; }
-        public List<Nstatus> StatusLists { get; set; } = new List<Nstatus>();
+        public List<Nstatus>? StatusLists { get; set; } = new List<Nstatus>();
+        public List<NuserWithPermission>? UserLists { get; set; } = new List<NuserWithPermission>();
         public Guid ProjectId { get; set; }
     }
+
+    public partial class NuserWithPermission
+    {
+        public int Id { get; set; }
+        public string? Aka { get; set; }
+
+        public string? Username { get; set; }
+
+        public string? Permission { get; set; }
+    }
+
 
 }

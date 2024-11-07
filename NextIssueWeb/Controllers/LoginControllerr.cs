@@ -6,6 +6,7 @@ using NextIssueWeb.Services;
 using System.Diagnostics;
 using System;
 using System.Security;
+using Microsoft.Data.SqlClient;
 
 namespace NextIssueWeb.Controllers
 {
@@ -62,6 +63,10 @@ namespace NextIssueWeb.Controllers
                 }
                 else
                 {
+                    if(rs.IsSuccess == false && rs.Code == 53)
+                    {
+                        return RedirectToAction("SqlError");
+                    }
                     var nlogger = new Metadata.NloggerCreate()
                     {
                         Name = "Login User @" + form.Username,
@@ -75,6 +80,7 @@ namespace NextIssueWeb.Controllers
                     return RedirectToAction("LoginPage");
                 }
             }
+           
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
@@ -95,5 +101,19 @@ namespace NextIssueWeb.Controllers
                 return RedirectToAction("LoginPage");
             }
         }
+
+        public IActionResult SqlError()
+        {
+            try
+            {
+               return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("LoginPage");
+            }
+        }
+
     }
 }

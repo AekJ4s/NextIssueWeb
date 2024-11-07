@@ -59,6 +59,7 @@ namespace NextIssueWeb.Services
             try
             {
                 rs.Data = _db.Nstatuses.Where(db => db.TaskUse == taskId).ToList();
+                rs.Code = 200;
             }
             catch (Exception ex)
             {

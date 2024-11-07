@@ -24,7 +24,6 @@ namespace NextIssueWeb.Controllers
             LoggerSv lgSv,
             StatusSv stSv,
             IssueSv isSv,
-
             NextIssueContext context)
         {
             _logger = logger;
@@ -36,8 +35,7 @@ namespace NextIssueWeb.Controllers
 
         }
 
-        [HttpGet]
-        public IActionResult popup()
+        public IActionResult popup1()
         {
             try
             {
@@ -48,8 +46,9 @@ namespace NextIssueWeb.Controllers
                 {
                     var model = new Metadata.NissueCreate();
                     model.StatusLists = _stSv.GetListsStatus(2).Data;
+                    model.UserLists = _acSv.GetAllUserPermission().Data;
                     model.StatusId = 1;
-                    return PartialView(nameof(popup), model);
+                    return PartialView("popup1",model);
                 }
                 else
                 {

@@ -9,59 +9,63 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = NextIssueWeb
 build_property.RootNamespace = NextIssueWeb
-build_property.ProjectDir = C:\Users\JasdakornKhumdej\Desktop\NextIssueWeb\NextIssueWeb\
+build_property.ProjectDir = C:\Users\admin\Desktop\NextIssueWeb\NextIssueWeb\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\JasdakornKhumdej\Desktop\NextIssueWeb\NextIssueWeb
+build_property.MSBuildProjectDirectory = C:\Users\admin\Desktop\NextIssueWeb\NextIssueWeb
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Home/Index.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Home/NOTFOUND.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Home/NOTFOUND.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxOT1RGT1VORC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Home/Privacy.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Issue/popup.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXNzdWVccG9wdXAuY3NodG1s
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Issue/popup1.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXNzdWVccG9wdXAxLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Loading/Loading.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Loading/Loading.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9hZGluZ1xMb2FkaW5nLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Login/LoginPage.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Login/LoginPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cTG9naW5QYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Project/popup.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Login/SqlError.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cU3FsRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Project/popup.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdFxwb3B1cC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Shared/Error.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/_ViewImports.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/_ViewStart.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/JasdakornKhumdej/Desktop/NextIssueWeb/NextIssueWeb/Views/Shared/_Layout.cshtml]
+[C:/Users/admin/Desktop/NextIssueWeb/NextIssueWeb/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-pghpmoeuf2

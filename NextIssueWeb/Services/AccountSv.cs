@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +12,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static NextIssueWeb.Models.Metadata;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NextIssueWeb.Services
@@ -46,21 +48,27 @@ namespace NextIssueWeb.Services
                     {
                         rs.Data = target;
                         rs.IsSuccess = true;
-                        rs.Message = "Login Successfully";
+                        rs.Message = "200 : Login Successfully";
                         rs.Code = 200;
                     }
                 }
                 else
                 {
                     rs.IsSuccess = false;
-                    rs.Message = "NOT FOUND USER";
+                    rs.Message = "400 : NOT FOUND USER";
                     rs.Code = 400;
                 }
+            }
+            catch (SqlException ex)
+            {
+                rs.IsSuccess = false;
+                rs.Message = "53 :" + ex.Message;
+                rs.Code = 53;
             }
             catch (Exception ex)
             {
                 rs.IsSuccess = false;
-                rs.Message = ex.Message;
+                rs.Message = "500 :" + ex.Message;
                 rs.Code = 500;
             }
             return rs;
@@ -82,6 +90,55 @@ namespace NextIssueWeb.Services
                 rs.Message = ex.Message;
             }
             return rs;
+        }
+        public ResponseModel<List<Metadata.NuserWithPermission>> GetAllUserPermission()
+        {
+            var rs = new ResponseModel<List<Metadata.NuserWithPermission>>();
+            try
+            {
+                var userLists = _db.Nusers.ToList();
+                var userWithpermission = new List<Metadata.NuserWithPermission>();
+                foreach (var user in userLists)
+                {
+                    var record = new Metadata.NuserWithPermission()
+                    {
+                        Id = user.Id,
+                        Username = user.Username,
+                        Aka = user.Aka,
+                        Permission = GetPositionById(user.Id).Data.Name,
+                    };
+                    userWithpermission.Add(record);
+                }
+                rs.Data = userWithpermission;
+                rs.Code = 200;
+                rs.Message = "Get List Of User Successfully";
+                rs.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                rs.IsSuccess = false;
+                rs.Code = 500;
+                rs.Message = ex.Message;
+            }
+            return rs;
+        }
+        public ResponseModel<Nposition> GetPositionById(int id)
+        {
+            var returnThis = new ResponseModel<Nposition>();
+            try
+            {
+                var merge = _db.MergeuserPositions.Where(db => db.UserId == id).FirstOrDefault();
+                returnThis.Data = _db.Npositions.Where(db => db.Id == merge.Id).FirstOrDefault();
+                returnThis.Code = 200;
+                returnThis.Message = "Get position successfully";
+            }
+            catch (Exception ex)
+            {
+                returnThis.Data = null;
+                returnThis.Code = 500;
+                returnThis.Message = "Get position fail :" + ex.Message;
+            }
+            return returnThis;
         }
         public ResponseModel<Nuser> GetUserById(int id)
         {
