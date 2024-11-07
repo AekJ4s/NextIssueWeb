@@ -1,0 +1,934 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NextIssueWeb</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/NextIssueWeb.styles.css" asp-append-version="true" />
+</head>
+<body>
+    @{
+        @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+        var User = HttpContextAccessor.HttpContext.Session.GetString("Username");
+        var Token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+        var Permission = HttpContextAccessor.HttpContext.Session.GetString("Permission");
+       
+    }
+    <style>
+        /* ทำให้ body และ html ยืดเต็มความสูง */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ทำให้ main ยืดได้ตามขนาดที่เหลือ */
+        main {
+            flex-grow: 1;
+        }
+
+        /* Footer ติดที่ด้านล่างของหน้า */
+        footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+    <style>
+        /* From Uiverse.io by JaydipPrajapati1910 */
+        .button-freetrial {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 17px;
+            border-radius: 5px;
+            width: 160px;
+            height: 40px;
+            border: 1px solid #06402B;
+            position: relative;
+            transition: 0.3s;
+            background-color: #5a5a5a;
+            font-weight: 600;
+        }
+
+            .button-freetrial::before {
+                content: "FREE TRAIL";
+                display: block;
+                font-size: 13px;
+                background-color: #0000FF;
+                color: #fff;
+                border-radius: 3px;
+                padding: 3px 5px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                transform: translate(-5px, -30%);
+                transition: .3s;
+            }
+
+            .button-freetrial:hover::before {
+                transform: translate(-5px, -50%);
+            }
+
+    </style>
+    <style>
+        .badges {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* 16px */
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+            .badges > button {
+                font-size: 0.875rem; /* 14px */
+                line-height: 1.25rem; /* 20px */
+                padding: 2px .5rem; /* 8px*/
+                cursor: pointer;
+                border: none;
+                border-radius: 0.375rem; /* 6px */
+                outline: none;
+            }
+
+            .badges .blue {
+                background-color: rgba(59, 130, 246, 0.10);
+                color: rgb(59 130 246);
+                border: 1px rgb(59 130 246) solid;
+            }
+
+            .badges .yellow {
+                background-color: rgba(234, 179, 8, 0.10);
+                color: rgb(234 179 8);
+                border: 1px rgb(234 179 8) solid;
+            }
+
+            .badges .green {
+                background-color: rgba(34, 197, 94, 0.10);
+                color: rgb(34 197 94);
+                border: 1px rgb(34 197 94) solid;
+            }
+
+            .badges .red {
+                background-color: rgba(239, 68, 68, 0.10);
+                color: rgb(239 68 68);
+                border: 1px rgb(239 68 68) solid;
+            }
+    </style>
+    <style>
+        /* From Uiverse.io by MarcLazz */
+        .button-social-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .button-social {
+            cursor: pointer;
+            text-decoration: none;
+            color: #ffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2d2e32;
+            border: 2px solid #2d2e32;
+            transition: all 0.45s;
+        }
+
+            .button-social:hover {
+                transform: rotate(360deg);
+                transform-origin: center center;
+                background-color: #ffff;
+                color: #2d2e32;
+            }
+
+                .button-social:hover .btn-svg {
+                    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(305deg) brightness(103%) contrast(103%);
+                }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    </style>
+    <style>
+        /* From Uiverse.io by andrew-demchenk0 */
+        .card-user-user {
+            --main-color: #000;
+            --submain-color: #78858F;
+            --bg-color: #fff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            position: relative;
+            width: 300px;
+            height: 384px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 20px;
+            background: var(--bg-color);
+        }
+
+        .card-user__img {
+            height: 192px;
+            width: 100%;
+        }
+
+            .card-user__img svg {
+                height: 100%;
+                border-radius: 20px 20px 0 0;
+            }
+
+        .card-user__avatar {
+            position: absolute;
+            width: 114px;
+            height: 114px;
+            background: var(--bg-color);
+            border-radius: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: calc(50% - 57px);
+        }
+
+            .card-user__avatar svg {
+                width: 100px;
+                height: 100px;
+            }
+
+        .card-user__title {
+            margin-top: 60px;
+            font-weight: 500;
+            font-size: 18px;
+            color: var(--main-color);
+        }
+
+        .card-user__subtitle {
+            margin-top: 10px;
+            font-weight: 400;
+            font-size: 15px;
+            color: var(--submain-color);
+        }
+
+        .card-user__btn {
+            margin-top: 15px;
+            width: 76px;
+            height: 31px;
+            border: 2px solid var(--main-color);
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--main-color);
+            background: var(--bg-color);
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .card-user__btn-solid {
+            background: var(--main-color);
+            color: var(--bg-color);
+        }
+
+        .card-user__btn:hover {
+            background: var(--main-color);
+            color: var(--bg-color);
+        }
+
+        .card-user__btn-solid:hover {
+            background: var(--bg-color);
+            color: var(--main-color);
+        }
+    </style>
+    <style>
+        .Btn-Ticket {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: darkgoldenrod;
+           
+        }
+            /* hover effect on button width */
+            .Btn-Ticket:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Ticket:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Ticket:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Ticket:active {
+                transform: translate(2px,2px);
+            }
+
+    </style> @* btn ticket *@
+    <style>
+        .Btn-Profile {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: darkblue;
+           
+        }
+            /* hover effect on button width */
+            .Btn-Profile:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Profile:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Profile:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Profile:active {
+                transform: translate(2px,2px);
+            }
+
+    </style> @* btn profile *@
+    <style>
+        .Btn-Setting {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: darkgray;
+           
+        }
+            /* hover effect on button width */
+            .Btn-Setting:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Setting:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Setting:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Setting:active {
+                transform: translate(2px,2px);
+            }
+
+    </style> @* btn setting *@
+    <style>
+        .Btn-Project {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: darkolivegreen;
+           
+        }
+            /* hover effect on button width */
+            .Btn-Project:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Project:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Project:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Project:active {
+                transform: translate(2px,2px);
+            }
+
+    </style> @* btn project *@
+    <style>
+        .Btn-Fast {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: darkorange;
+           
+        }
+            /* hover effect on button width */
+            .Btn-Fast:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Fast:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Fast:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Fast:active {
+                transform: translate(2px,2px);
+            }
+
+    </style> @* btn fast add *@
+
+    <style> @* btn buglists *@
+        .Btn-BugLists {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color:darkred;
+        }
+            /* hover effect on button width */
+            .Btn-BugLists:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-BugLists:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-BugLists:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-BugLists:active {
+                transform: translate(2px,2px);
+            }
+
+    </style> 
+    <style>
+        .Btn-Login {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: forestgreen
+        }
+            /* hover effect on button width */
+            .Btn-Login:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Login:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Login:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Login:active {
+                transform: translate(2px,2px);
+            }
+
+    </style>
+    <style>
+        .Btn-Logout {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: red
+        }
+            /* hover effect on button width */
+            .Btn-Logout:hover {
+                width: 125px;
+                border-radius: 40px;
+                transition-duration: .3s;
+            }
+
+                .Btn-Logout:hover .sign {
+                    width: 30%;
+                    transition-duration: .3s;
+                    padding-left: 20px;
+                }
+                /* hover effect button's text */
+                .Btn-Logout:hover .text {
+                    opacity: 1;
+                    width: 70%;
+                    transition-duration: .3s;
+                    padding-right: 10px;
+                }
+            /* button click effect*/
+            .Btn-Logout:active {
+                transform: translate(2px,2px);
+            }
+
+    </style>
+    <style>
+        
+        /* plus sign */
+        .sign {
+            width: 100%;
+            transition-duration: .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .sign svg {
+                width: 17px;
+            }
+
+                .sign svg path {
+                    fill: white;
+                }
+        /* text */
+        .text {
+            position: absolute;
+            right: 0%;
+            width: 0%;
+            opacity: 0;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition-duration: .3s;
+            text-align:center;
+            vertical-align:middle;
+        }
+        
+    </style>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                   
+                    <button class="button-freetrial">
+                        <span style="font-size:35px; color:greenyellow; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">Next</span>
+                        <span style="font-size:20px">issue</span>
+                    </button>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @if (User != null && Token != null && Permission != null)
+                        {
+                            <li class="nav-item">
+                                <a class="Btn-Project">
+                                    <div class="sign" href="@Url.Action("Index", "Home")">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
+                                          <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m7.5-6.923c-.67.204-1.335.82-1.887 1.855A8 8 0 0 0 5.145 4H7.5zM4.09 4a9.3 9.3 0 0 1 .64-1.539 7 7 0 0 1 .597-.933A7.03 7.03 0 0 0 2.255 4zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a7 7 0 0 0-.656 2.5zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5zM8.5 5v2.5h2.99a12.5 12.5 0 0 0-.337-2.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5zM5.145 12q.208.58.468 1.068c.552 1.035 1.218 1.65 1.887 1.855V12zm.182 2.472a7 7 0 0 1-.597-.933A9.3 9.3 0 0 1 4.09 12H2.255a7 7 0 0 0 3.072 2.472M3.82 11a13.7 13.7 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5zm6.853 3.472A7 7 0 0 0 13.745 12H11.91a9.3 9.3 0 0 1-.64 1.539 7 7 0 0 1-.597.933M8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855q.26-.487.468-1.068zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.7 13.7 0 0 1-.312 2.5m2.802-3.5a7 7 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7 7 0 0 0-3.072-2.472c.218.284.418.598.597.933M10.855 4a8 8 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="text ms-5">Project</div>
+                                </a>
+                            </li>
+                            <li class="nav-item ms-3">
+                                <a class="Btn-Ticket">
+                                    <div class="sign" href="@Url.Action("Index", "Home")">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" fill="currentColor" class="bi bi-cone-striped" viewBox="0 0 16 16">
+                                            <path d="m9.97 4.88.953 3.811C10.159 8.878 9.14 9 8 9s-2.158-.122-2.923-.309L6.03 4.88C6.635 4.957 7.3 5 8 5s1.365-.043 1.97-.12m-.245-.978L8.97.88C8.718-.13 7.282-.13 7.03.88L6.275 3.9C6.8 3.965 7.382 4 8 4s1.2-.036 1.725-.098m4.396 8.613a.5.5 0 0 1 .037.96l-6 2a.5.5 0 0 1-.316 0l-6-2a.5.5 0 0 1 .037-.96l2.391-.598.565-2.257c.862.212 1.964.339 3.165.339s2.303-.127 3.165-.339l.565 2.257z" />
+                                        </svg>
+                                    </div>
+                                    <div class="text ms-5">Ticket</div>
+                                </a>
+                            </li>
+                            <li class="nav-item ms-3">
+                                <a class="Btn-BugLists" href="@Url.Action("Index", "Home")">
+                                    <div class="sign">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bug-fill" viewBox="0 0 16 16">
+                                            <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z" />
+                                            <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975" />
+                                        </svg>
+                                    </div>
+                                    <div class="text ms-5">BugLists</div>
+                                </a>
+                            </li>
+                            <li class="nav-item ms-3">
+                                <a class="Btn-Fast" href="@Url.Action("Index", "Home")">
+                                    <div class="sign">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rocket-takeoff-fill" viewBox="0 0 16 16">
+                                          <path d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.6 3.6 0 0 0-.108-.563 2 2 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2 2 0 0 0-.16-.045 4 4 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.55 2.55 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361s.437 1.732-.36 2.531Z"/>
+                                          <path d="M5.205 10.787a7.6 7.6 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925"/>
+                                        </svg>
+                                    </div>
+                                    <div class="text ms-5">Quick</div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        @if (User != null && Token != null && Permission != null)
+                        {
+                            <li class="nav-item" >
+                                <a class="Btn-Profile" href="@Url.Action("Logout", "Login")">
+                                    <div class="sign">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                        </svg>
+                                    </div>
+                                    <div class="text">Profile</div>
+                                </a>
+                            </li>
+                            <li class="nav-item ms-3" >
+                                <a class="Btn-Setting" href="@Url.Action("Logout", "Login")">
+                                    <div class="sign">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
+                                          <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5m0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78zM5.048 3.967l-.087.065zm-.431.355A4.98 4.98 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8zm.344 7.646.087.065z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="text">Setting</div>
+                                </a>
+                            </li>
+                            <li class="nav-item ms-3" >
+                                <a class="Btn-Logout" href="@Url.Action("Logout", "Login")">
+                                    <div class="sign"><svg viewBox="0 0 512 512">
+                                        <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
+                                    <div class="text">Logout</div>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <button class="Btn-Login" href="@Url.Action("LoginPage", "Login")">
+                                    <div class="sign">
+                                        <svg viewBox="0 0 512 512">
+                                            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="text">Login</div>
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <div class="container">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger mt-4 badges" style="height:60px;">
+                <div style="vertical-align:middle" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                        <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                        <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2" />
+                    </svg>
+                    <label>@TempData["ErrorMessage"] </label>
+                </div>
+            </div>
+        }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success mt-4 badges" style="height:60px;">
+                <div style="vertical-align:middle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                        <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                        <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2" />
+                    </svg>
+                    <label>@TempData["ErrorMessage"] </label>
+                </div>
+            </div>
+        }
+        @if (TempData["WarningMessage"] != null)
+        {
+            <div class="alert alert-warning mt-4 badges" style="height:60px;">
+                <div style="vertical-align:middle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                        <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                        <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2" />
+                    </svg>
+                    <label>@TempData["ErrorMessage"] </label>
+                </div>
+            </div>
+        }
+        @if (TempData["InfoMessage"] != null)
+        {
+            <div class="alert alert-info mt-4 badges" style="height:60px;">
+                <div style="vertical-align:middle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                        <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                        <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2" />
+                    </svg>
+                    <label>@TempData["ErrorMessage"] </label>
+                </div>
+            </div>
+        }
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+       
+    </div>
+    <footer>
+        <hr />
+        <div class="text-center" style="text-decoration-style:dashed; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            <span class="text-success" style="font-size:20px">free trial</span> <span class="text-secondary">Next issue 1.0.0 build version 0611.2212 developer by jasdakorn khumdej</span><br />
+            <div class="button-social-container mt-4">
+                <button class="button-social flex-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         width="22px"
+                         class="btn-svg"
+                         viewBox="0 0 24 24">
+                        <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+                        <g stroke-linejoin="round"
+                           stroke-linecap="round"
+                           id="SVGRepo_tracerCarrier"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <path fill="#fff"
+                                  d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
+                                  clip-rule="evenodd"
+                                  fill-rule="evenodd"></path>
+                            <path fill="#fff"
+                                  d="M18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z"></path>
+                            <path fill="#fff"
+                                  d="M1.65396 4.27606C1 5.55953 1 7.23969 1 10.6V13.4C1 16.7603 1 18.4405 1.65396 19.7239C2.2292 20.8529 3.14708 21.7708 4.27606 22.346C5.55953 23 7.23969 23 10.6 23H13.4C16.7603 23 18.4405 23 19.7239 22.346C20.8529 21.7708 21.7708 20.8529 22.346 19.7239C23 18.4405 23 16.7603 23 13.4V10.6C23 7.23969 23 5.55953 22.346 4.27606C21.7708 3.14708 20.8529 2.2292 19.7239 1.65396C18.4405 1 16.7603 1 13.4 1H10.6C7.23969 1 5.55953 1 4.27606 1.65396C3.14708 2.2292 2.2292 3.14708 1.65396 4.27606ZM13.4 3H10.6C8.88684 3 7.72225 3.00156 6.82208 3.0751C5.94524 3.14674 5.49684 3.27659 5.18404 3.43597C4.43139 3.81947 3.81947 4.43139 3.43597 5.18404C3.27659 5.49684 3.14674 5.94524 3.0751 6.82208C3.00156 7.72225 3 8.88684 3 10.6V13.4C3 15.1132 3.00156 16.2777 3.0751 17.1779C3.14674 18.0548 3.27659 18.5032 3.43597 18.816C3.81947 19.5686 4.43139 20.1805 5.18404 20.564C5.49684 20.7234 5.94524 20.8533 6.82208 20.9249C7.72225 20.9984 8.88684 21 10.6 21H13.4C15.1132 21 16.2777 20.9984 17.1779 20.9249C18.0548 20.8533 18.5032 20.7234 18.816 20.564C19.5686 20.1805 20.1805 19.5686 20.564 18.816C20.7234 18.5032 20.8533 18.0548 20.9249 17.1779C20.9984 16.2777 21 15.1132 21 13.4V10.6C21 8.88684 20.9984 7.72225 20.9249 6.82208C20.8533 5.94524 20.7234 5.49684 20.564 5.18404C20.1805 4.43139 19.5686 3.81947 18.816 3.43597C18.5032 3.27659 18.0548 3.14674 17.1779 3.0751C16.2777 3.00156 15.1132 3 13.4 3Z"
+                                  clip-rule="evenodd"
+                                  fill-rule="evenodd"></path>
+                        </g>
+                    </svg>
+                </button>
+                <button class="button-social flex-center">
+                    <svg viewBox="0 -2 20 20"
+                         width="22px"
+                         class="btn-svg"
+                         version="1.1"
+                         xmlns="http://www.w3.org/2000/svg"
+                         xmlns:xlink="http://www.w3.org/1999/xlink"
+                         fill="#fff">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>twitter [#154]</title>
+                            <desc>Created with Sketch.</desc>
+                            <defs></defs>
+                            <g id="Page-1"
+                               stroke="none"
+                               stroke-width="1"
+                               fill="none"
+                               fill-rule="evenodd">
+                                <g id="Dribbble-Light-Preview"
+                                   transform="translate(-60.000000, -7521.000000)"
+                                   fill="#fff">
+                                    <g id="icons" transform="translate(56.000000, 160.000000)">
+                                        <path d="M10.29,7377 C17.837,7377 21.965,7370.84365 21.965,7365.50546 C21.965,7365.33021 21.965,7365.15595 21.953,7364.98267 C22.756,7364.41163 23.449,7363.70276 24,7362.8915 C23.252,7363.21837 22.457,7363.433 21.644,7363.52751 C22.5,7363.02244 23.141,7362.2289 23.448,7361.2926 C22.642,7361.76321 21.761,7362.095 20.842,7362.27321 C19.288,7360.64674 16.689,7360.56798 15.036,7362.09796 C13.971,7363.08447 13.518,7364.55538 13.849,7365.95835 C10.55,7365.79492 7.476,7364.261 5.392,7361.73762 C4.303,7363.58363 4.86,7365.94457 6.663,7367.12996 C6.01,7367.11125 5.371,7366.93797 4.8,7366.62489 L4.8,7366.67608 C4.801,7368.5989 6.178,7370.2549 8.092,7370.63591 C7.488,7370.79836 6.854,7370.82199 6.24,7370.70483 C6.777,7372.35099 8.318,7373.47829 10.073,7373.51078 C8.62,7374.63513 6.825,7375.24554 4.977,7375.24358 C4.651,7375.24259 4.325,7375.22388 4,7375.18549 C5.877,7376.37088 8.06,7377 10.29,7376.99705"
+                                              id="twitter-[#154]"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+                <a href="https://github.com/AekJ4s" class="button-social flex-center">
+                    <svg stroke="#fff"
+                         fill="#fff"
+                         xmlns:xlink="http://www.w3.org/1999/xlink"
+                         xmlns="http://www.w3.org/2000/svg"
+                         version="1.1"
+                         class="btn-svg"
+                         width="22px"
+                         viewBox="0 0 20 20">
+                        <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+                        <g stroke-linejoin="round"
+                           stroke-linecap="round"
+                           id="SVGRepo_tracerCarrier"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>github [#fff142]</title>
+                            <desc>Created with Sketch.</desc>
+                            <defs></defs>
+                            <g fill-rule="evenodd"
+                               fill="none"
+                               stroke-width="1"
+                               stroke="none"
+                               id="Page-1">
+                                <g fill="#fff"
+                                   transform="translate(-140.000000, -7559.000000)"
+                                   id="Dribbble-Light-Preview">
+                                    <g transform="translate(56.000000, 160.000000)" id="icons">
+                                        <path id="github-[#fff142]"
+                                              d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <button class="button-social flex-center">
+                    <svg viewBox="0 -3 20 20"
+                         width="22px"
+                         class="btn-svg"
+                         version="1.1"
+                         xmlns="http://www.w3.org/2000/svg"
+                         xmlns:xlink="http://www.w3.org/1999/xlink"
+                         fill="#fff"
+                         stroke="#fff">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>youtube [#fff168]</title>
+                            <desc>Created with Sketch.</desc>
+                            <defs></defs>
+                            <g id="Page-1"
+                               stroke="none"
+                               stroke-width="1"
+                               fill="none"
+                               fill-rule="evenodd">
+                                <g id="Dribbble-Light-Preview"
+                                   transform="translate(-300.000000, -7442.000000)"
+                                   fill="#fff">
+                                    <g id="icons" transform="translate(56.000000, 160.000000)">
+                                        <path d="M251.988432,7291.58588 L251.988432,7285.97425 C253.980638,7286.91168 255.523602,7287.8172 257.348463,7288.79353 C255.843351,7289.62824 253.980638,7290.56468 251.988432,7291.58588 M263.090998,7283.18289 C262.747343,7282.73013 262.161634,7282.37809 261.538073,7282.26141 C259.705243,7281.91336 248.270974,7281.91237 246.439141,7282.26141 C245.939097,7282.35515 245.493839,7282.58153 245.111335,7282.93357 C243.49964,7284.42947 244.004664,7292.45151 244.393145,7293.75096 C244.556505,7294.31342 244.767679,7294.71931 245.033639,7294.98558 C245.376298,7295.33761 245.845463,7295.57995 246.384355,7295.68865 C247.893451,7296.0008 255.668037,7296.17532 261.506198,7295.73552 C262.044094,7295.64178 262.520231,7295.39147 262.895762,7295.02447 C264.385932,7293.53455 264.28433,7285.06174 263.090998,7283.18289"
+                                              id="youtube-[#fff168]"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+@* 
+<div class="card-user-user">
+    <div class="card-user__img"><svg xmlns="http://www.w3.org/2000/svg" width="100%"><rect fill="#ffffff" width="540" height="450"></rect><defs><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="0" y2="100%" gradientTransform="rotate(222,648,379)"><stop offset="0" stop-color="#ffffff"></stop><stop offset="1" stop-color="#FC726E"></stop></linearGradient><pattern patternUnits="userSpaceOnUse" id="b" width="300" height="250" x="0" y="0" viewBox="0 0 1080 900"><g fill-opacity="0.5"><polygon fill="#444" points="90 150 0 300 180 300"></polygon><polygon points="90 150 180 0 0 0"></polygon><polygon fill="#AAA" points="270 150 360 0 180 0"></polygon><polygon fill="#DDD" points="450 150 360 300 540 300"></polygon><polygon fill="#999" points="450 150 540 0 360 0"></polygon><polygon points="630 150 540 300 720 300"></polygon><polygon fill="#DDD" points="630 150 720 0 540 0"></polygon><polygon fill="#444" points="810 150 720 300 900 300"></polygon><polygon fill="#FFF" points="810 150 900 0 720 0"></polygon><polygon fill="#DDD" points="990 150 900 300 1080 300"></polygon><polygon fill="#444" points="990 150 1080 0 900 0"></polygon><polygon fill="#DDD" points="90 450 0 600 180 600"></polygon><polygon points="90 450 180 300 0 300"></polygon><polygon fill="#666" points="270 450 180 600 360 600"></polygon><polygon fill="#AAA" points="270 450 360 300 180 300"></polygon><polygon fill="#DDD" points="450 450 360 600 540 600"></polygon><polygon fill="#999" points="450 450 540 300 360 300"></polygon><polygon fill="#999" points="630 450 540 600 720 600"></polygon><polygon fill="#FFF" points="630 450 720 300 540 300"></polygon><polygon points="810 450 720 600 900 600"></polygon><polygon fill="#DDD" points="810 450 900 300 720 300"></polygon><polygon fill="#AAA" points="990 450 900 600 1080 600"></polygon><polygon fill="#444" points="990 450 1080 300 900 300"></polygon><polygon fill="#222" points="90 750 0 900 180 900"></polygon><polygon points="270 750 180 900 360 900"></polygon><polygon fill="#DDD" points="270 750 360 600 180 600"></polygon><polygon points="450 750 540 600 360 600"></polygon><polygon points="630 750 540 900 720 900"></polygon><polygon fill="#444" points="630 750 720 600 540 600"></polygon><polygon fill="#AAA" points="810 750 720 900 900 900"></polygon><polygon fill="#666" points="810 750 900 600 720 600"></polygon><polygon fill="#999" points="990 750 900 900 1080 900"></polygon><polygon fill="#999" points="180 0 90 150 270 150"></polygon><polygon fill="#444" points="360 0 270 150 450 150"></polygon><polygon fill="#FFF" points="540 0 450 150 630 150"></polygon><polygon points="900 0 810 150 990 150"></polygon><polygon fill="#222" points="0 300 -90 450 90 450"></polygon><polygon fill="#FFF" points="0 300 90 150 -90 150"></polygon><polygon fill="#FFF" points="180 300 90 450 270 450"></polygon><polygon fill="#666" points="180 300 270 150 90 150"></polygon><polygon fill="#222" points="360 300 270 450 450 450"></polygon><polygon fill="#FFF" points="360 300 450 150 270 150"></polygon><polygon fill="#444" points="540 300 450 450 630 450"></polygon><polygon fill="#222" points="540 300 630 150 450 150"></polygon><polygon fill="#AAA" points="720 300 630 450 810 450"></polygon><polygon fill="#666" points="720 300 810 150 630 150"></polygon><polygon fill="#FFF" points="900 300 810 450 990 450"></polygon><polygon fill="#999" points="900 300 990 150 810 150"></polygon><polygon points="0 600 -90 750 90 750"></polygon><polygon fill="#666" points="0 600 90 450 -90 450"></polygon><polygon fill="#AAA" points="180 600 90 750 270 750"></polygon><polygon fill="#444" points="180 600 270 450 90 450"></polygon><polygon fill="#444" points="360 600 270 750 450 750"></polygon><polygon fill="#999" points="360 600 450 450 270 450"></polygon><polygon fill="#666" points="540 600 630 450 450 450"></polygon><polygon fill="#222" points="720 600 630 750 810 750"></polygon><polygon fill="#FFF" points="900 600 810 750 990 750"></polygon><polygon fill="#222" points="900 600 990 450 810 450"></polygon><polygon fill="#DDD" points="0 900 90 750 -90 750"></polygon><polygon fill="#444" points="180 900 270 750 90 750"></polygon><polygon fill="#FFF" points="360 900 450 750 270 750"></polygon><polygon fill="#AAA" points="540 900 630 750 450 750"></polygon><polygon fill="#FFF" points="720 900 810 750 630 750"></polygon><polygon fill="#222" points="900 900 990 750 810 750"></polygon><polygon fill="#222" points="1080 300 990 450 1170 450"></polygon><polygon fill="#FFF" points="1080 300 1170 150 990 150"></polygon><polygon points="1080 600 990 750 1170 750"></polygon><polygon fill="#666" points="1080 600 1170 450 990 450"></polygon><polygon fill="#DDD" points="1080 900 1170 750 990 750"></polygon></g></pattern></defs><rect x="0" y="0" fill="url(#a)" width="100%" height="100%"></rect><rect x="0" y="0" fill="url(#b)" width="100%" height="100%"></rect></svg></div>
+    <div class="card-user__avatar"><svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><circle cx="64" cy="64" fill="#ff8475" r="60"></circle><circle cx="64" cy="64" fill="#f85565" opacity=".4" r="48"></circle><path d="m64 14a32 32 0 0 1 32 32v41a6 6 0 0 1 -6 6h-52a6 6 0 0 1 -6-6v-41a32 32 0 0 1 32-32z" fill="#7f3838"></path><path d="m62.73 22h2.54a23.73 23.73 0 0 1 23.73 23.73v42.82a4.45 4.45 0 0 1 -4.45 4.45h-41.1a4.45 4.45 0 0 1 -4.45-4.45v-42.82a23.73 23.73 0 0 1 23.73-23.73z" fill="#393c54" opacity=".4"></path><circle cx="89" cy="65" fill="#fbc0aa" r="7"></circle><path d="m64 124a59.67 59.67 0 0 0 34.69-11.06l-3.32-9.3a10 10 0 0 0 -9.37-6.64h-43.95a10 10 0 0 0 -9.42 6.64l-3.32 9.3a59.67 59.67 0 0 0 34.69 11.06z" fill="#4bc190"></path><path d="m45 110 5.55 2.92-2.55 8.92a60.14 60.14 0 0 0 9 1.74v-27.08l-12.38 10.25a2 2 0 0 0 .38 3.25z" fill="#356cb6" opacity=".3"></path><path d="m71 96.5v27.09a60.14 60.14 0 0 0 9-1.74l-2.54-8.93 5.54-2.92a2 2 0 0 0 .41-3.25z" fill="#356cb6" opacity=".3"></path><path d="m57 123.68a58.54 58.54 0 0 0 14 0v-25.68h-14z" fill="#fff"></path><path d="m64 88.75v9.75" fill="none" stroke="#fbc0aa" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"></path><circle cx="39" cy="65" fill="#fbc0aa" r="7"></circle><path d="m64 91a25 25 0 0 1 -25-25v-16.48a25 25 0 1 1 50 0v16.48a25 25 0 0 1 -25 25z" fill="#ffd8c9"></path><path d="m91.49 51.12v-4.72c0-14.95-11.71-27.61-26.66-28a27.51 27.51 0 0 0 -28.32 27.42v5.33a2 2 0 0 0 2 2h6.81a8 8 0 0 0 6.5-3.33l4.94-6.88a18.45 18.45 0 0 1 1.37 1.63 22.84 22.84 0 0 0 17.87 8.58h13.45a2 2 0 0 0 2.04-2.03z" fill="#bc5b57"></path><path d="m62.76 36.94c4.24 8.74 10.71 10.21 16.09 10.21h5" style="fill:none;stroke-linecap:round;stroke:#fff;stroke-miterlimit:10;stroke-width:2;opacity:.1"></path><path d="m71 35c2.52 5.22 6.39 6.09 9.6 6.09h3" style="fill:none;stroke-linecap:round;stroke:#fff;stroke-miterlimit:10;stroke-width:2;opacity:.1"></path><circle cx="76" cy="62.28" fill="#515570" r="3"></circle><circle cx="52" cy="62.28" fill="#515570" r="3"></circle><ellipse cx="50.42" cy="69.67" fill="#f85565" opacity=".1" rx="4.58" ry="2.98"></ellipse><ellipse cx="77.58" cy="69.67" fill="#f85565" opacity=".1" rx="4.58" ry="2.98"></ellipse><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="m64 67v4" stroke="#fbc0aa" stroke-width="4"></path><path d="m55 56h-9.25" opacity=".2" stroke="#515570" stroke-width="2"></path><path d="m82 56h-9.25" opacity=".2" stroke="#515570" stroke-width="2"></path></g><path d="m64 84c5 0 7-3 7-3h-14s2 3 7 3z" fill="#f85565" opacity=".4"></path><path d="m65.07 78.93-.55.55a.73.73 0 0 1 -1 0l-.55-.55c-1.14-1.14-2.93-.93-4.27.47l-1.7 1.6h14l-1.66-1.6c-1.34-1.4-3.13-1.61-4.27-.47z" fill="#f85565"></path></svg></div>
+    <div class="card-user__title">Cameron Williamson</div>
+    <div class="card-user__subtitle">Web Development</div>
+    <div class="card-user__wrapper">
+        <button class="card-user__btn">Button</button>
+        <button class="card-user__btn card-user__btn-solid">Button</button>
+    </div>
+</div>
+ *@

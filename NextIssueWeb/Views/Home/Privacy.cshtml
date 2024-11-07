@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+<button onclick="startProcess()">Start Process</button>
+
+<script>
+    function startProcess() {
+        console.log("process");
+        showLoader();
+
+        // จำลองการทำงานของ process ที่ต้องใช้เวลา (เช่นการเรียก API)
+        setTimeout(() => {
+            hideLoader();
+        }, 3000); // ซ่อน loader หลังจาก 3 วินาที
+    }
+
+        function showLoader() {
+        document.getElementById("wifi-loader").style.display = "flex";
+    }
+</script>
