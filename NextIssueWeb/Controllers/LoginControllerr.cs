@@ -47,13 +47,14 @@ namespace NextIssueWeb.Controllers
                         Loguser = rs.Data.Id,
                         Detail = rs.Message,
                         Controller = Controller,
-                        Type = "0001"
+                        System_id = 1
                     };
                     _lgSv.CreateLog(nlogger);
                     var token = _acSv.GenerateToken(form.Username, form.Password);
                     var per = _acSv.GetPemissionUserById(rs.Data.Id).Data;
                     var permission = per.OrderBy(db => db.Name).FirstOrDefault();
                     HttpContext.Session.SetString("Username", rs.Data.Username);
+                    HttpContext.Session.SetString("Id", rs.Data.Id.ToString());
                     HttpContext.Session.SetString("Token", token);
                     HttpContext.Session.SetString("Permission", permission.Name?.ToString() ?? string.Empty);
                     return RedirectToAction("Index", "Home");
@@ -63,10 +64,10 @@ namespace NextIssueWeb.Controllers
                     var nlogger = new Metadata.NloggerCreate()
                     {
                         Name = "Login User @" + form.Username,
-                        Loguser = Guid.Empty,
+                        Loguser = 0,
                         Detail = rs.Message,
                         Controller = Controller,
-                        Type = "0001"
+                        System_id = 1
                     };
                     _lgSv.CreateLog(nlogger);
                     TempData["ErrorMessage"] = rs.Message;

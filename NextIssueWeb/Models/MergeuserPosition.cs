@@ -5,13 +5,13 @@ namespace NextIssueWeb.Models;
 
 public partial class MergeuserPosition
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
-    public Guid UserId { get; set; }
+    public int? PositionId { get; set; }
 
-    public string PositionId { get; set; } = null!;
+    public int? UserId { get; set; }
 
-    public virtual Nposition Position { get; set; } = null!;
+    public virtual Nposition? Position { get; set; }
 
-    public virtual Nuser User { get; set; } = null!;
+    public virtual Nuser? User { get; set; }
 }

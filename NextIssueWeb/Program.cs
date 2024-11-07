@@ -10,6 +10,10 @@ builder.Services.AddDbContext<NextIssueContext>();
 // ลงทะเบียน AccountSv และ LoggerSv
 builder.Services.AddScoped<AccountSv>();
 builder.Services.AddScoped<LoggerSv>();
+builder.Services.AddScoped<ProjectSv>();
+builder.Services.AddScoped<StatusSv>();
+
+
 builder.Services.AddDistributedMemoryCache(); // ใช้สำหรับเก็บข้อมูล Session ในหน่วยความจำ
 
 builder.Services.AddSession(options =>
@@ -28,7 +32,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+// เพิ่มการตั้งค่า Status Code Pages
+app.UseStatusCodePagesWithReExecute("/Home/NOTFOUND");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

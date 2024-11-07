@@ -35,7 +35,7 @@ namespace NextIssueWeb.Controllers
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("LoginPage", "Login");
             }
-           
+
         }
 
         public IActionResult Privacy()
@@ -47,6 +47,11 @@ namespace NextIssueWeb.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult NOTFOUND()
+        {
+            return View();
         }
     }
 }

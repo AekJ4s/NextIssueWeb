@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NextIssueWeb.Services
@@ -37,9 +39,10 @@ namespace NextIssueWeb.Services
             try
             {
                 var target = _db.Nusers.Where(db => db.Username == user || db.Aka == user).FirstOrDefault();
-                if (target != null) {
+                if (target != null)
+                {
                     string pwAfter = Encoding.UTF8.GetBytes(password).ToString();
-                    if(pwAfter == Encoding.UTF8.GetBytes(target.Password).ToString()) // รหัสผ่านถูก
+                    if (pwAfter == Encoding.UTF8.GetBytes(target.Password).ToString()) // รหัสผ่านถูก
                     {
                         rs.Data = target;
                         rs.IsSuccess = true;
@@ -54,7 +57,8 @@ namespace NextIssueWeb.Services
                     rs.Code = 400;
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 rs.IsSuccess = false;
                 rs.Message = ex.Message;
                 rs.Code = 500;
@@ -70,14 +74,16 @@ namespace NextIssueWeb.Services
                 rs.Code = 200;
                 rs.Message = "Get List Of User Successfully";
                 rs.IsSuccess = true;
-            } catch (Exception ex) { 
+            }
+            catch (Exception ex)
+            {
                 rs.IsSuccess = false;
                 rs.Code = 500;
                 rs.Message = ex.Message;
             }
             return rs;
         }
-        public ResponseModel<Nuser> GetUserById(Guid id)
+        public ResponseModel<Nuser> GetUserById(int id)
         {
             ResponseModel<Nuser> rs = new ResponseModel<Nuser>();
             try
@@ -95,13 +101,13 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<List<Nposition>> GetPemissionUserById(Guid id)
+        public ResponseModel<List<Nposition>> GetPemissionUserById(int id)
         {
             ResponseModel<List<Nposition>> rs = new ResponseModel<List<Nposition>>();
             try
             {
                 var UxP = _db.MergeuserPositions.Where(db=>db.UserId == id).OrderBy(db=>db.Id).ToList();
-                rs.Data = _db.Npositions.ToList().Where(db => db.Id == UxP.First().PositionId ).ToList();
+                rs.Data = _db.Npositions.ToList().Where(db => db.Id == UxP.First().PositionId).ToList();
                 rs.Code = 200;
                 rs.Message = "Get User Successfully";
                 rs.IsSuccess = true;
@@ -125,13 +131,14 @@ namespace NextIssueWeb.Services
             {
                 Nuser user = new Nuser()
                 {
-                    Id = Guid.NewGuid(),
                     Username = data.Username,
                     Password = Encoding.UTF8.GetBytes(data.Password).ToString(),
                     Aka = data.Aka,
-                    CreateBy = data.guid,
+                    //CreateBy = data.UserId
+                    //UpdateBy = data.UserId
+
                     CreateDate = DateTime.Now,
-                    UpdateBy = data.guid,
+
                     UpdateDate = DateTime.Now
                 };
                 rs.Data = GetUserById(user.Id).Data;
@@ -155,17 +162,16 @@ namespace NextIssueWeb.Services
             try
             {
                 var userlst = new List<Nuser>();
-                foreach(var record in data)
+                foreach (var record in data)
                 {
                     Nuser user = new Nuser()
                     {
-                        Id = Guid.NewGuid(),
                         Username = record.Username,
                         Password = Encoding.UTF8.GetBytes(record.Password).ToString(),
                         Aka = record.Aka,
-                        CreateBy = record.guid,
+                        //Create = record.UserId,
+                        //UpdateBy = record.UserId,
                         CreateDate = DateTime.Now,
-                        UpdateBy = record.guid,
                         UpdateDate = DateTime.Now
                     };
                     userlst.Add(user);
@@ -196,7 +202,7 @@ namespace NextIssueWeb.Services
             {
                 Nuser user = GetUserById(data.Id).Data;
                 user.UpdateDate = DateTime.Now;
-                user.UpdateBy = data.guid;
+                //UpdateBy = record.UserId,
                 user.Username = (data.Username != null && data.Username != user.Username) ? data.Username : user.Username;
                 user.Aka = (data.Aka != null && data.Aka != user.Aka) ? data.Aka : user.Aka;
 
@@ -226,7 +232,7 @@ namespace NextIssueWeb.Services
                 {
                     Nuser user = GetUserById(record.Id).Data;
                     user.UpdateDate = DateTime.Now;
-                    user.UpdateBy = record.guid;
+                    //UpdateBy = data.UserId
                     user.Username = (record.Username != null && record.Username != user.Username) ? record.Username : user.Username;
                     user.Aka = (record.Aka != null && record.Aka != user.Aka) ? record.Aka : user.Aka;
                     userlst.Add(user);
@@ -254,12 +260,12 @@ namespace NextIssueWeb.Services
             {
                 Nuser user = GetUserById(data.Id).Data;
                 user.UpdateDate = DateTime.Now;
-                user.UpdateBy = data.guid;
+                //UpdateBy = data.UserId
                 user.Username = (data.Username != null && data.Username != user.Username) ? data.Username : user.Username;
-                user.Password = (data.Password != null 
-                    && Encoding.UTF8.GetBytes(data.Password).ToString() 
-                    != Encoding.UTF8.GetBytes(user.Password).ToString()) 
-                    ? Encoding.UTF8.GetBytes(data.Password).ToString() 
+                user.Password = (data.Password != null
+                    && Encoding.UTF8.GetBytes(data.Password).ToString()
+                    != Encoding.UTF8.GetBytes(user.Password).ToString())
+                    ? Encoding.UTF8.GetBytes(data.Password).ToString()
                     : Encoding.UTF8.GetBytes(user.Password).ToString();
                 _db.Nusers.Update(user);
                 _db.SaveChanges();
@@ -281,7 +287,7 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Delete
-        public ResponseModel<Nuser> DeleteUserById(Guid id)
+        public ResponseModel<Nuser> DeleteUserById(int id)
         {
             ResponseModel<Nuser> rs = new ResponseModel<Nuser>();
             var user = GetUserById(id).Data;

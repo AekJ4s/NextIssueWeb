@@ -1,0 +1,172 @@
+﻿@{
+    ViewData["Title"] = "popup create project";
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    var User = HttpContextAccessor.HttpContext.Session.GetString("Username");
+    var Token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+    var Permission = HttpContextAccessor.HttpContext.Session.GetString("Permission");
+}
+
+@model Metadata.NprojectCreate
+<form class="form" asp-controller="Project" asp-action="CreateProject">
+    <div class="row">
+        <div class="col">
+            <p class="title">Create Project </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5">
+            <span>Project Name</span><span class="text-danger ms-1">*</span>
+            <input asp-for="Name" type="text" class="input form-control" required>
+        </div>
+        <div class="col-2">
+            <span>Status</span><span class="text-danger ms-1">*</span>
+            
+            <select asp-for="Status" class="form-control">
+                @foreach(var record in Model.StatusLists)
+                {
+                    <option value="@record.Id">@record.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-5">
+            <span>Project Start Date</span><span class="text-danger ms-1">*</span>
+            <input asp-for="CreateDate" placeholder="" type="date" class="input form-control">
+        </div>
+    </div>
+   
+    <button class="submit mt-2" type="submit">Create</button>
+</form>
+
+<style>
+    /* From Uiverse.io by Yaya12085 */ 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 1280px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  color: royalblue;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.title::before,.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+  background-color: royalblue;
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+  background-color: royalblue;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.message, .signin {
+  color: rgba(88, 87, 87, 0.822);
+  font-size: 14px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a {
+  color: royalblue;
+}
+
+.signin a:hover {
+  text-decoration: underline royalblue;
+}
+
+.flex {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+}
+
+.form label {
+  position: relative;
+}
+
+.form label .input {
+  width: 100%;
+  padding: 10px 10px 20px 10px;
+  outline: 0;
+  border: 1px solid rgba(105, 105, 105, 0.397);
+  border-radius: 10px;
+}
+
+.form label .input + span {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  color: grey;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown + span {
+  top: 15px;
+  font-size: 0.9em;
+}
+
+.form label .input:focus + span,.form label .input:valid + span {
+  top: 30px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.form label .input:valid + span {
+  color: green;
+}
+
+.submit {
+  border: none;
+  outline: none;
+  background-color: royalblue;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  transform: .3s ease;
+}
+
+.submit:hover {
+  background-color: rgb(56, 90, 194);
+}
+
+@@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+</style>

@@ -5,19 +5,19 @@ namespace NextIssueWeb.Models;
 
 public partial class Nlogger
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
-    public string Detail { get; set; } = null!;
+    public string? Controller { get; set; }
 
-    public Guid Loguser { get; set; }
+    public string? Detail { get; set; }
 
-    public string Controller { get; set; } = null!;
+    public int? SystemId { get; set; }
 
-    public DateTime CreateDate { get; set; }
+    public DateTime? CreateDate { get; set; }
 
-    public string SystemId { get; set; } = null!;
+    public int? LogBy { get; set; }
 
-    public virtual SystemOnDate System { get; set; } = null!;
+    public virtual SystemOnDate? System { get; set; }
 }

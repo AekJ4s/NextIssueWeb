@@ -5,23 +5,19 @@ namespace NextIssueWeb.Models;
 
 public partial class Nissue
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
-    public DateTime CreateDate { get; set; }
+    public int? ImportantId { get; set; }
 
-    public Guid CreateBy { get; set; }
+    public int? InformerId { get; set; }
 
-    public DateTime UpdateDate { get; set; }
+    public int? ResponsibleId { get; set; }
 
-    public Guid UpdateBy { get; set; }
+    public DateTime? CreateDate { get; set; }
 
-    public int ImportantId { get; set; }
+    public DateTime? UpdateDate { get; set; }
 
-    public Guid InformerId { get; set; }
-
-    public Guid ResponsibleId { get; set; }
-
-    public virtual Nimportant Important { get; set; } = null!;
+    public virtual Nimportant? Important { get; set; }
 }

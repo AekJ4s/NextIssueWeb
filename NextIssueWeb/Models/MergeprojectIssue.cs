@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace NextIssueWeb.Models;
 
-public partial class Npicture
+public partial class MergeprojectIssue
 {
     public int Id { get; set; }
 
-    public byte[]? Picture { get; set; }
+    public int ProjectId { get; set; }
 
-    public DateTime? UploadDate { get; set; }
+    public int IssueId { get; set; }
 }

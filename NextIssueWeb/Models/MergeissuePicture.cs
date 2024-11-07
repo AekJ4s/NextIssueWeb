@@ -5,9 +5,9 @@ namespace NextIssueWeb.Models;
 
 public partial class MergeissuePicture
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid IssueId { get; set; }
+    public int? IssueId { get; set; }
 
-    public Guid PictureId { get; set; }
+    public int? PictureId { get; set; }
 }

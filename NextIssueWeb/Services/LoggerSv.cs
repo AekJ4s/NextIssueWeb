@@ -29,17 +29,16 @@ namespace NextIssueWeb.Services
             {
                 Nlogger nlogger = new Nlogger()
                 {
-                    Id = Guid.NewGuid(),
                     Name = logger.Name,
                     Detail = logger.Detail,
-                    Loguser = logger.Loguser,
+                    LogBy = logger.Loguser,
                     Controller = logger.Controller,
                     CreateDate = DateTime.Now,
-                    SystemId = logger.Type
+                    SystemId = logger.System_id
                 };
                 _db.Nloggers.Add(nlogger);
                 _db.SaveChanges();
-                var systemDeleteLog = _db.SystemOnDates.Where(db => db.Id == "0001").FirstOrDefault();
+                var systemDeleteLog = _db.SystemOnDates.Where(db => db.Id == 1).FirstOrDefault();
                 if (systemDeleteLog != null && systemDeleteLog.SystemStatus == true)
                 {
                     DeleteLog(systemDeleteLog.SystemDaydeleted);
@@ -61,7 +60,7 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Get
-        public ResponseModel<Nlogger> FindLogById(Guid Id)
+        public ResponseModel<Nlogger> FindLogById(int Id)
         {
             var rs = new ResponseModel<Nlogger>();
             try
@@ -124,7 +123,7 @@ namespace NextIssueWeb.Services
             }
         }
 
-        public bool DeleteLogWithParam(int day,string idSystem)
+        public bool DeleteLogWithParam(int day, int idSystem)
         {
             try
             {

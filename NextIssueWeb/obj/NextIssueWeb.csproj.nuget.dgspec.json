@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\admin\\Source\\Repos\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj": {}
+    "C:\\Users\\JasdakornKhumdej\\Desktop\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\admin\\Source\\Repos\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj": {
+    "C:\\Users\\JasdakornKhumdej\\Desktop\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\admin\\Source\\Repos\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj",
+        "projectUniqueName": "C:\\Users\\JasdakornKhumdej\\Desktop\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj",
         "projectName": "NextIssueWeb",
-        "projectPath": "C:\\Users\\admin\\Source\\Repos\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\admin\\Source\\Repos\\NextIssueWeb\\NextIssueWeb\\obj\\",
+        "projectPath": "C:\\Users\\JasdakornKhumdej\\Desktop\\NextIssueWeb\\NextIssueWeb\\NextIssueWeb.csproj",
+        "packagesPath": "C:\\Users\\JasdakornKhumdej\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\JasdakornKhumdej\\Desktop\\NextIssueWeb\\NextIssueWeb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\JasdakornKhumdej\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
