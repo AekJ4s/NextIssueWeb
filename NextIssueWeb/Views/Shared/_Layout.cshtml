@@ -643,8 +643,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item ms-3">
-                                    <a class="Btn-Ticket">
-                                        <div class="sign" href="@Url.Action("Index", "Home")">
+                                    <a class="Btn-Ticket" id="openTicketModal">
+                                        <div class="sign">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" fill="currentColor" class="bi bi-cone-striped" viewBox="0 0 16 16">
                                                 <path d="m9.97 4.88.953 3.811C10.159 8.878 9.14 9 8 9s-2.158-.122-2.923-.309L6.03 4.88C6.635 4.957 7.3 5 8 5s1.365-.043 1.97-.12m-.245-.978L8.97.88C8.718-.13 7.282-.13 7.03.88L6.275 3.9C6.8 3.965 7.382 4 8 4s1.2-.036 1.725-.098m4.396 8.613a.5.5 0 0 1 .037.96l-6 2a.5.5 0 0 1-.316 0l-6-2a.5.5 0 0 1 .037-.96l2.391-.598.565-2.257c.862.212 1.964.339 3.165.339s2.303-.127 3.165-.339l.565 2.257z" />
                                             </svg>
@@ -923,31 +923,55 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
    <script>
-    $(document).on('click', '#openCreateProjectModal', function (e) {
-        e.preventDefault(); // ป้องกันการทำงานปกติของปุ่ม
+        $(document).on('click', '#openCreateProjectModal', function (e) {
+            e.preventDefault(); // ป้องกันการทำงานปกติของปุ่ม
 
-        console.log("Try to open popup");
+            console.log("Try to open popup");
 
-        $.ajax({
-            url: '@Url.Action("popup", "Project")', // ระบุชื่อ Controller และ Action ที่ถูกต้อง
-            type: 'GET',
-            success: function (result) {
-                console.log("Success open popup");
-                $('#createProjectModalBody').html(result);
-                $('#createProjectModal').modal('show');
-            },
-            error: function (xhr, status, error) {
-                if (xhr.status === 401) {
-                    // ผู้ใช้ไม่ได้รับอนุญาต ให้ redirect ไปที่หน้า Login
-                    window.location.href = '@Url.Action("LoginPage", "Login")';
-                } else {
-                    console.log("Fail open popup");
-                    alert("เกิดข้อผิดพลาด: " + error);
+            $.ajax({
+                url: '@Url.Action("popup", "Project")', // ระบุชื่อ Controller และ Action ที่ถูกต้อง
+                type: 'GET',
+                success: function (result) {
+                    console.log("Success open popup");
+                    $('#createProjectModalBody').html(result);
+                    $('#createProjectModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        // ผู้ใช้ไม่ได้รับอนุญาต ให้ redirect ไปที่หน้า Login
+                        window.location.href = '@Url.Action("LoginPage", "Login")';
+                    } else {
+                        console.log("Fail open popup");
+                        alert("เกิดข้อผิดพลาด: " + error);
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script> @*create project call*@
+    <script> @*open ticket call*@
+        $(document).on('click', '#openTicketModal', function (e) {
+            e.preventDefault(); // ป้องกันการทำงานปกติของปุ่ม
+            console.log("Try to open popup");
+            $.ajax({
+                url: '@Url.Action("popup", "Issue")', // ระบุชื่อ Controller และ Action ที่ถูกต้อง
+                type: 'GET',
+                success: function (result) {
+                    console.log("Success open popup");
+                    $('#createProjectModalBody').html(result);
+                    $('#createProjectModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        // ผู้ใช้ไม่ได้รับอนุญาต ให้ redirect ไปที่หน้า Login
+                        window.location.href = '@Url.Action("LoginPage", "Login")';
+                    } else {
+                        console.log("Fail open popup");
+                        alert("เกิดข้อผิดพลาด: " + error);
+                    }
+                }
+            });
+        });
+    </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -22,6 +22,8 @@ public partial class NextIssueContext : DbContext
 
     public virtual DbSet<MergeuserPosition> MergeuserPositions { get; set; }
 
+    public virtual DbSet<Ncomment> Ncomments { get; set; }
+
     public virtual DbSet<Nimportant> Nimportants { get; set; }
 
     public virtual DbSet<Nissue> Nissues { get; set; }
@@ -52,13 +54,11 @@ public partial class NextIssueContext : DbContext
     {
         modelBuilder.Entity<MergeissuePicture>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MERGEiss__3214EC27E0B9DFAA");
-
             entity.ToTable("MERGEissue_picture");
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
-                .HasColumnName("ID");
+                .HasColumnName("id");
             entity.Property(e => e.IssueId).HasColumnName("issue_id");
             entity.Property(e => e.PictureId).HasColumnName("picture_id");
         });
@@ -93,15 +93,25 @@ public partial class NextIssueContext : DbContext
                 .HasConstraintName("FK_MERGEuser_position_Nuser");
         });
 
+        modelBuilder.Entity<Ncomment>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("NComment");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID");
+            entity.Property(e => e.IssueId).HasColumnName("Issue_id");
+        });
+
         modelBuilder.Entity<Nimportant>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Nimporta__3214EC27805671B2");
 
             entity.ToTable("Nimportant");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -115,9 +125,7 @@ public partial class NextIssueContext : DbContext
 
             entity.ToTable("Nissue");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.ImportantId).HasColumnName("Important_id");
             entity.Property(e => e.InformerId).HasColumnName("Informer_id");
@@ -125,10 +133,12 @@ public partial class NextIssueContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ResponsibleId).HasColumnName("Responsible_id");
+            entity.Property(e => e.StatusId).HasColumnName("Status_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Important).WithMany(p => p.Nissues)
                 .HasForeignKey(d => d.ImportantId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Nissue_Nimportant");
         });
 
@@ -138,9 +148,7 @@ public partial class NextIssueContext : DbContext
 
             entity.ToTable("NLogger");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Controller)
                 .HasMaxLength(555)
                 .IsUnicode(false);
@@ -164,9 +172,7 @@ public partial class NextIssueContext : DbContext
 
             entity.ToTable("Npicture");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Picture).HasColumnName("picture");
             entity.Property(e => e.UploadDate).HasColumnType("datetime");
         });
@@ -177,9 +183,7 @@ public partial class NextIssueContext : DbContext
 
             entity.ToTable("Nposition");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -203,9 +207,7 @@ public partial class NextIssueContext : DbContext
         {
             entity.ToTable("NStatus");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
@@ -221,9 +223,7 @@ public partial class NextIssueContext : DbContext
 
             entity.HasIndex(e => e.Aka, "UQ__Nuser__C6903796BF8C8E37").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Aka)
                 .HasMaxLength(10)
                 .IsUnicode(false)

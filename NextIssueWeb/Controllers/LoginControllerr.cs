@@ -55,6 +55,7 @@ namespace NextIssueWeb.Controllers
                     var permission = per.OrderBy(db => db.Name).FirstOrDefault();
                     HttpContext.Session.SetString("Username", rs.Data.Username);
                     HttpContext.Session.SetString("Id", rs.Data.Id.ToString());
+                    var test = rs.Data.Id.ToString();
                     HttpContext.Session.SetString("Token", token);
                     HttpContext.Session.SetString("Permission", permission.Name?.ToString() ?? string.Empty);
                     return RedirectToAction("Index", "Home");

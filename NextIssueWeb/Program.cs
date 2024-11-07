@@ -12,6 +12,7 @@ builder.Services.AddScoped<AccountSv>();
 builder.Services.AddScoped<LoggerSv>();
 builder.Services.AddScoped<ProjectSv>();
 builder.Services.AddScoped<StatusSv>();
+builder.Services.AddScoped<IssueSv>();
 
 
 builder.Services.AddDistributedMemoryCache(); // ใช้สำหรับเก็บข้อมูล Session ในหน่วยความจำ

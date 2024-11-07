@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    var Id = HttpContextAccessor.HttpContext.Session.GetString("Id");
     var User = HttpContextAccessor.HttpContext.Session.GetString("Username");
     var Token = HttpContextAccessor.HttpContext.Session.GetString("Token");
     var Permission = HttpContextAccessor.HttpContext.Session.GetString("Permission");

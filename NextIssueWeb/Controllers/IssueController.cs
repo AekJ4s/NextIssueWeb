@@ -7,20 +7,24 @@ using System.Security;
 
 namespace NextIssueWeb.Controllers
 {
-    public class ProjectController : Controller
+    public class IssueController : Controller
     {
-        private readonly ILogger<ProjectController> _logger;
+        private readonly ILogger<IssueController> _logger;
         private readonly AccountSv _acSv;
         private readonly LoggerSv _lgSv;
         private readonly ProjectSv _pjSv;
         private readonly StatusSv _stSv;
+        private readonly IssueSv _isSv;
+
         private readonly NextIssueContext _context;
-        public readonly string Controller = "Project";
-        public ProjectController(ILogger<ProjectController> logger,
+        public readonly string Controller = "Issue";
+        public IssueController(ILogger<IssueController> logger,
             ProjectSv pjSv,
             AccountSv acSv,
             LoggerSv lgSv,
             StatusSv stSv,
+            IssueSv isSv,
+
             NextIssueContext context)
         {
             _logger = logger;
@@ -28,6 +32,8 @@ namespace NextIssueWeb.Controllers
             _lgSv = lgSv ?? throw new ArgumentNullException(nameof(lgSv));
             _pjSv = pjSv ?? throw new ArgumentNullException(nameof(pjSv));
             _stSv = stSv ?? throw new ArgumentNullException(nameof(stSv));
+            _isSv = isSv ?? throw new ArgumentNullException(nameof(isSv));
+
         }
 
         [HttpGet]
@@ -40,12 +46,10 @@ namespace NextIssueWeb.Controllers
                 var permission = HttpContext.Session.GetString("Permission");
                 if (user != null && token != null)
                 {
-                    var model = new Metadata.NprojectCreate();
-                    model.StatusLists = _stSv.GetListsStatus(1).Data;
-                    model.Status = 1;
-                    model.CreateDate = DateTime.Now;
+                    var model = new Metadata.NissueCreate();
+                    model.StatusLists = _stSv.GetListsStatus(2).Data;
+                    model.StatusId = 1;
                     return PartialView(nameof(popup), model);
-
                 }
                 else
                 {
@@ -61,26 +65,26 @@ namespace NextIssueWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProject(Metadata.NprojectCreate model)
+        public IActionResult OpenTicket(Metadata.NissueCreate model)
         {
-
             try
             {
                 var user = HttpContext.Session.GetString("Username");
                 var id = HttpContext.Session.GetString("Id");
                 var token = HttpContext.Session.GetString("Token");
                 var permission = HttpContext.Session.GetString("Permission");
+
                 if (user != null && token != null)
                 {
-                    var rs = _pjSv.CreateProject(model);
+                    var rs = _isSv.CreateIssue(model);
                     if (rs.IsSuccess == true)
                     {
                         var log = new Metadata.NloggerCreate()
                         {
                             Controller = Controller,
-                            System_id = 2,
+                            System_id = 3,
                             Loguser = int.Parse(id),
-                            Name = "สร้าง Project @"+ user,
+                            Name = "สร้าง Issue @"+ user,
                             CreateDate = DateTime.Now
                         };
                         _lgSv.CreateLog(log);

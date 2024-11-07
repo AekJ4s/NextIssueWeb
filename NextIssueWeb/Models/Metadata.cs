@@ -69,4 +69,16 @@ public partial class Metadata
         public int TaskUse { get; set; }
         public int UserId { get; set; } = 0;
     }
+
+    public partial class NissueCreate
+    {
+        public string Name { get; set; } = null!;
+        public int ImportantId { get; set; }
+        public int InformerId { get; set; }
+        public int ResponsibleId { get; set; }
+        public int StatusId { get; set; }
+        public List<Nstatus> StatusLists { get; set; } = new List<Nstatus>();
+        public Guid ProjectId { get; set; }
+    }
+
 }
