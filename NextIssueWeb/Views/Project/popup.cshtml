@@ -16,25 +16,28 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-5">
+        <div class="col-6">
             <span>Project Name</span><span class="text-danger ms-1">*</span>
             <input asp-for="Name" type="text" class="input form-control" required>
         </div>
-        <div class="col-2">
+        
+        <div class="col-6">
+            <span>Project Start Date</span><span class="text-danger ms-1">*</span>
+            <input asp-for="CreateDate" placeholder="" type="date" class="input form-control">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             <span>Status</span><span class="text-danger ms-1">*</span>
-            
             <select asp-for="Status" class="form-control">
-                @foreach(var record in Model.StatusLists)
+                @foreach (var record in Model.StatusLists)
                 {
                     <option value="@record.Id">@record.Name</option>
                 }
             </select>
         </div>
-        <div class="col-5">
-            <span>Project Start Date</span><span class="text-danger ms-1">*</span>
-            <input asp-for="CreateDate" placeholder="" type="date" class="input form-control">
-        </div>
     </div>
+
    
     <button class="submit mt-2" type="submit">Create</button>
 </form>

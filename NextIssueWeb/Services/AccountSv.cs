@@ -127,7 +127,7 @@ namespace NextIssueWeb.Services
             var returnThis = new ResponseModel<Nposition>();
             try
             {
-                var merge = _db.MergeuserPositions.Where(db => db.UserId == id).FirstOrDefault();
+                var merge = _db.MergeuserPositions.Where(db => db.UserId == id).OrderBy(x => x.PositionId == 5).FirstOrDefault();
                 returnThis.Data = _db.Npositions.Where(db => db.Id == merge.Id).FirstOrDefault();
                 returnThis.Code = 200;
                 returnThis.Message = "Get position successfully";
@@ -145,7 +145,12 @@ namespace NextIssueWeb.Services
             ResponseModel<Nuser> rs = new ResponseModel<Nuser>();
             try
             {
-                rs.Data = _db.Nusers.ToList().Where(db => db.Id == id).FirstOrDefault();
+                var data = _db.Nusers.Where(db => db.Id == id).FirstOrDefault();
+                if(data != null)
+                {
+                    data.Password = null;
+                }
+                rs.Data = data;
                 rs.Code = 200;
                 rs.Message = "Get User Successfully";
                 rs.IsSuccess = true;
@@ -158,13 +163,121 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<List<Nposition>> GetPemissionUserById(int id)
+        public ResponseModel<Nuser> GetUserByName(string username)
+        {
+            ResponseModel<Nuser> rs = new ResponseModel<Nuser>();
+            try
+            {
+                var data = _db.Nusers.ToList().Where(db => db.Username == username).FirstOrDefault();
+                data.Password = null;
+                rs.Data = data;
+                rs.Code = 200;
+                rs.Message = "Get User Successfully";
+                rs.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                rs.Code = 500;
+                rs.Message = "Cannot User Successfully";
+                rs.IsSuccess = true;
+            }
+            return rs;
+        }
+
+        public ResponseModel<List<Nuser>> GetUserListsByGroupId(int id)
+        {
+            ResponseModel<List<Nuser>> rs = new ResponseModel<List<Nuser>>();
+            try
+            {
+                rs.Data = _db.Nusers.ToList().Where(db => db.Id == id).ToList();
+                rs.Code = 200;
+                rs.Message = "Get User Lists Successfully";
+                rs.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                rs.Code = 500;
+                rs.Message = "Cannot User Successfully";
+                rs.IsSuccess = true;
+            }
+            return rs;
+        }
+
+        public ResponseModel<List<NuserWithPermission>> GetUserPermissionListsByGroupId(int id)
+        {
+            ResponseModel<List<NuserWithPermission>> rs = new ResponseModel<List<NuserWithPermission>>();
+            try
+            {
+                    List<int> UserIdLst = _db.MergeuserPositions
+                   .Where(db => db.PositionId == id)
+                   .Select(x => x.UserId)
+                   .Where(x => x.HasValue) // กรองค่า null ออก
+                   .Select(x => x.Value)   // ดึงค่า int ออกมา
+                   .Distinct()
+                   .ToList();
+
+
+                var returnThis = new List<NuserWithPermission>();
+                foreach ( var item in UserIdLst)
+                {
+                    var user = _db.Nusers.Where(db => db.Id == item).FirstOrDefault();
+                    var _newRecord = new NuserWithPermission();
+                    _newRecord.Username = user.Username;
+                    _newRecord.Aka = user.Aka;
+                    _newRecord.Id = user.Id;
+                    _newRecord.Permission = _db.Npositions.Where(db=>db.Id == id).FirstOrDefault().Name = null ?? "?";
+                    returnThis.Add(_newRecord);
+                }
+                rs.Data = returnThis;
+                rs.Code = 200;
+                rs.Message = "Get User Lists By Id Permission Successfully";
+                rs.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                rs.Code = 500;
+                rs.Message = "Cannot User Successfully";
+                rs.IsSuccess = true;
+            }
+            return rs;
+        }
+
+        public ResponseModel<List<Nposition>> GetPermissionUserById(int id)
         {
             ResponseModel<List<Nposition>> rs = new ResponseModel<List<Nposition>>();
             try
             {
-                var UxP = _db.MergeuserPositions.Where(db=>db.UserId == id).OrderBy(db=>db.Id).ToList();
+                var UxP = _db.MergeuserPositions.Where(db=>db.UserId == id).OrderByDescending(db=>db.PositionId == 5).ToList();
                 rs.Data = _db.Npositions.ToList().Where(db => db.Id == UxP.First().PositionId).ToList();
+                rs.Code = 200;
+                rs.Message = "Get User Successfully";
+                rs.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                rs.Code = 500;
+                rs.Message = "Cannot User Successfully";
+                rs.IsSuccess = true;
+            }
+            return rs;
+        }
+
+        public ResponseModel<NuserWithPermission> GetPermissionUserById2(int id)
+        {
+            ResponseModel<NuserWithPermission> rs = new ResponseModel<NuserWithPermission>();
+            try
+            {
+                var UxP = _db.MergeuserPositions.Where(db => db.UserId == id).OrderByDescending(db => db.PositionId == 5).ToList();
+                var user = _db.Nusers.Where(db => db.Id == id).FirstOrDefault();
+                NuserWithPermission detail = new NuserWithPermission()
+                {
+                    Id = UxP.First().Id,
+                    Aka = user.Aka,
+                    Username = user.Username,
+                    PermissionId = UxP.First().PositionId,
+                    Permission = _db.Npositions.Where(db => db.Id == UxP.First().PositionId).FirstOrDefault().Name
+                };
+                rs.Data = detail;
                 rs.Code = 200;
                 rs.Message = "Get User Successfully";
                 rs.IsSuccess = true;

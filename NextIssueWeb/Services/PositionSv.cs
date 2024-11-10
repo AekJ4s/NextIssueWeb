@@ -6,40 +6,39 @@ using System.Linq;
 
 namespace NextIssueWeb.Services
 {
-    public class StatusSv : Controller
+    public class PositionSv : Controller
     {
         public NextIssueContext _db;
 
         public string _config;
         private string encrypword = "NextIssueSystemForAuthenticationKeyAndSendBackToMe";
         readonly string Services = "LoggerSv";
-        public StatusSv(NextIssueContext context)
+        public PositionSv(NextIssueContext context)
         {
             _db = context;
         }
-        public StatusSv(string config)
+        public PositionSv(string config)
         {
             _config = config;
         }
         #region Create
-        public ResponseModel<Nstatus> CreateProject(Metadata.NstatusCreate record)
+        public ResponseModel<Nposition> CreatePosition(Metadata.NpositionCreate record)
         {
-            var rs = new ResponseModel<Nstatus>();
+            var rs = new ResponseModel<Nposition>();
             try
             {
-                Nstatus nstatus = new Nstatus()
+                Nposition nposition = new Nposition()
                 {
                     Name = record.Name,
-                    TaskUse = record.TaskUse,
-                    CreateBy = record.UserId,
-                    UpdateBy = record.UserId,
+                    CreateBy = record.CreateBy,
+                    UpdateBy = record.UpdateBy,
                     CreateDate = DateTime.Now,
                     UpdateDate = DateTime.Now,
                 };
-                _db.Nstatuses.Add(nstatus);
+                _db.Npositions.Add(nposition);
                 _db.SaveChanges();
                 rs.IsSuccess = true;
-                rs.Message = "Status Create Successfully";
+                rs.Message = "Position Create Successfully";
                 rs.Code = 200;
             }
             catch (Exception ex)
@@ -53,12 +52,13 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Get
-        public ResponseModel<List<Nstatus>> GetListsStatus(int taskId)
+        public ResponseModel<Nposition> GetPositionById(int id)
         {
-            var rs = new ResponseModel<List<Nstatus>>();
+            var rs = new ResponseModel<Nposition>();
             try
             {
-                rs.Data = _db.Nstatuses.Where(db => db.TaskUse == taskId).ToList();
+                rs.Data = _db.Npositions.Where(db => db.Id == id).FirstOrDefault();
+                rs.Message = "Get Postion Successfully";
                 rs.Code = 200;
             }
             catch (Exception ex)
@@ -69,14 +69,14 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<Nstatus> GetStatusById(int taskId)
+        public ResponseModel<List<Nposition>> GetPositionLists()
         {
-            var rs = new ResponseModel<Nstatus>();
+            var rs = new ResponseModel<List<Nposition>>();
             try
             {
-                rs.Data = _db.Nstatuses.Where(db => db.Id == taskId).FirstOrDefault();
+                rs.Data = _db.Npositions.ToList();
+                rs.Message = "Get Postion Lists Successfully";
                 rs.Code = 200;
-                rs.Message = "Get Status Successfully";
             }
             catch (Exception ex)
             {
@@ -90,6 +90,25 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Delete
+        public ResponseModel<Nposition> DeletePositionById(int id)
+        {
+            var rs = new ResponseModel<Nposition>();
+            try
+            {
+                var record = _db.Npositions.Where(db => db.Id == id).FirstOrDefault();
+                _db.Npositions.Remove(record);
+                rs.Data = null;
+                rs.Message = "Delete Postion Successfully";
+                rs.Code = 200;
+            }
+            catch (Exception ex)
+            {
+                rs.IsSuccess = false;
+                rs.Message = ex.Message;
+                rs.Code = 500;
+            }
+            return rs;
+        }
 
         #endregion
 

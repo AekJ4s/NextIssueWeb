@@ -18,4 +18,6 @@ public partial class Nproject
     public int CreateBy { get; set; }
 
     public int UpdateBy { get; set; }
+
+    public virtual ICollection<MergeprojectIssue> MergeprojectIssues { get; set; } = new List<MergeprojectIssue>();
 }

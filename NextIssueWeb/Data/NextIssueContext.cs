@@ -56,9 +56,7 @@ public partial class NextIssueContext : DbContext
         {
             entity.ToTable("MERGEissue_picture");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IssueId).HasColumnName("issue_id");
             entity.Property(e => e.PictureId).HasColumnName("picture_id");
         });
@@ -67,11 +65,19 @@ public partial class NextIssueContext : DbContext
         {
             entity.ToTable("MERGEproject_issue");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.IssueId).HasColumnName("Issue_id");
             entity.Property(e => e.ProjectId).HasColumnName("Project_id");
+
+            entity.HasOne(d => d.Issue).WithMany(p => p.MergeprojectIssues)
+                .HasForeignKey(d => d.IssueId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MERGEproject_issue_Nissue");
+
+            entity.HasOne(d => d.Project).WithMany(p => p.MergeprojectIssues)
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MERGEproject_issue_NProject");
         });
 
         modelBuilder.Entity<MergeuserPosition>(entity =>
@@ -80,7 +86,9 @@ public partial class NextIssueContext : DbContext
                 .HasNoKey()
                 .ToTable("MERGEuser_position");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID");
             entity.Property(e => e.PositionId).HasColumnName("Position_id");
             entity.Property(e => e.UserId).HasColumnName("User_id");
 
@@ -132,6 +140,7 @@ public partial class NextIssueContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ResponsibleGroupId).HasColumnName("ResponsibleGroup_id");
             entity.Property(e => e.ResponsibleId).HasColumnName("Responsible_id");
             entity.Property(e => e.StatusId).HasColumnName("Status_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
@@ -246,9 +255,7 @@ public partial class NextIssueContext : DbContext
 
             entity.ToTable("SystemCompany");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.LicenseId).HasColumnName("License_id");
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -282,9 +289,7 @@ public partial class NextIssueContext : DbContext
 
             entity.ToTable("SystemOnDate");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.SystemDaydeleted).HasColumnName("SYSTEM_daydeleted");
             entity.Property(e => e.SystemNameEn)
                 .HasMaxLength(50)

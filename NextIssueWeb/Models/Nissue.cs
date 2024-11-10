@@ -15,6 +15,8 @@ public partial class Nissue
 
     public int ResponsibleId { get; set; }
 
+    public int ResponsibleGroupId { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }
@@ -26,4 +28,6 @@ public partial class Nissue
     public int StatusId { get; set; }
 
     public virtual Nimportant Important { get; set; } = null!;
+
+    public virtual ICollection<MergeprojectIssue> MergeprojectIssues { get; set; } = new List<MergeprojectIssue>();
 }

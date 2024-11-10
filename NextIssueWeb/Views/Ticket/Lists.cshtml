@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Lists Of Ticket";
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    var User = HttpContextAccessor.HttpContext.Session.GetString("Username");
+    var Token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+    var Permission = HttpContextAccessor.HttpContext.Session.GetString("Permission");
+    var Id = HttpContextAccessor.HttpContext.Session.GetString("Id");
+
+}
+
+<style>
+    /* ตั้งค่าพื้นหลังและสีตัวอักษร */
+    .table {
+        background-color: #003333; /* พื้นหลังสีเข้ม */
+        color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        /* หัวข้อของตาราง */
+        .table thead {
+            background-color: #2F4F4F; /* สีเขียว */
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* ตกแต่งบรรทัด */
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+            /* เมื่อเลื่อนเมาส์ผ่าน */
+            .table tbody tr:hover {
+                background-color: #000000; /* เปลี่ยนสีพื้นหลังเมื่อ Hover */
+            }
+
+        /* เส้นขอบตาราง */
+        .table th,
+        .table td {
+            border: none;
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* การจัดวางลิงก์ในตาราง */
+        .table a {
+            color: #4CAF50;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+            .table a:hover {
+                color: #ffffff;
+            }
+</style>
+
+@model List<Metadata.NissueLists>
+<div>
+    <table class="table text-white">
+        <thead class="text-center">
+            <tr>
+                <th style="width:50px;">No.</th>
+                <th style="width:250px;">Project</th>
+                <th style="width:250px;">Ticket</th>
+                <th>Status</th>
+                <th>Informer</th>
+                <th>Group</th>
+                <th>User</th>
+                <th>Ticket Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var i = 0;
+                foreach (var record in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td><a href="">@record.ProjectName</a></td>
+                        <td class="text-start">
+                            <a asp-action="Detail" asp-controller="Ticket" asp-route-TicketId="@record.IssueId">
+                               @record.IssueId @record.IssueName
+                            </a>
+                        </td>
+                        <td>@record.IssueStatus | @record.IssueStatusName</td>
+                        <td>@record.InformerName</td>
+                        <td>@record.ResponsibleGroupName</td>
+                        <td>@record.ResponsibleName</td>
+                        <td class="text-center">@record.IssueCreateDate</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+

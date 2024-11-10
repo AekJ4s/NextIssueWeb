@@ -6,37 +6,34 @@ using System.Linq;
 
 namespace NextIssueWeb.Services
 {
-    public class StatusSv : Controller
+    public class ImportanceSv : Controller
     {
         public NextIssueContext _db;
 
         public string _config;
         private string encrypword = "NextIssueSystemForAuthenticationKeyAndSendBackToMe";
         readonly string Services = "LoggerSv";
-        public StatusSv(NextIssueContext context)
+        public ImportanceSv(NextIssueContext context)
         {
             _db = context;
         }
-        public StatusSv(string config)
+        public ImportanceSv(string config)
         {
             _config = config;
         }
         #region Create
-        public ResponseModel<Nstatus> CreateProject(Metadata.NstatusCreate record)
+        public ResponseModel<Nimportant> CreateImportance(Nimportant record)
         {
-            var rs = new ResponseModel<Nstatus>();
+            var rs = new ResponseModel<Nimportant>();
             try
             {
-                Nstatus nstatus = new Nstatus()
+                Nimportant nimportant = new Nimportant()
                 {
                     Name = record.Name,
-                    TaskUse = record.TaskUse,
-                    CreateBy = record.UserId,
-                    UpdateBy = record.UserId,
                     CreateDate = DateTime.Now,
                     UpdateDate = DateTime.Now,
                 };
-                _db.Nstatuses.Add(nstatus);
+                _db.Nimportants.Add(nimportant);
                 _db.SaveChanges();
                 rs.IsSuccess = true;
                 rs.Message = "Status Create Successfully";
@@ -53,12 +50,12 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Get
-        public ResponseModel<List<Nstatus>> GetListsStatus(int taskId)
+        public ResponseModel<List<Nimportant>> GetListsimportance()
         {
-            var rs = new ResponseModel<List<Nstatus>>();
+            var rs = new ResponseModel<List<Nimportant>>();
             try
             {
-                rs.Data = _db.Nstatuses.Where(db => db.TaskUse == taskId).ToList();
+                rs.Data = _db.Nimportants.ToList();
                 rs.Code = 200;
             }
             catch (Exception ex)
@@ -69,14 +66,13 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<Nstatus> GetStatusById(int taskId)
+        public ResponseModel<List<Nimportant>> GetListsimportanceById(int imId)
         {
-            var rs = new ResponseModel<Nstatus>();
+            var rs = new ResponseModel<List<Nimportant>>();
             try
             {
-                rs.Data = _db.Nstatuses.Where(db => db.Id == taskId).FirstOrDefault();
+                rs.Data = _db.Nimportants.Where(db => db.Id == imId).ToList();
                 rs.Code = 200;
-                rs.Message = "Get Status Successfully";
             }
             catch (Exception ex)
             {

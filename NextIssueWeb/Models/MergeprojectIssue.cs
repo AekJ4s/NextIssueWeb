@@ -10,4 +10,8 @@ public partial class MergeprojectIssue
     public int IssueId { get; set; }
 
     public Guid ProjectId { get; set; }
+
+    public virtual Nissue Issue { get; set; } = null!;
+
+    public virtual Nproject Project { get; set; } = null!;
 }

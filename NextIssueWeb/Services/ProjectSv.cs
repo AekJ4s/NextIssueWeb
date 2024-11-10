@@ -54,6 +54,62 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Get
+        public ResponseModel<Nproject> GetProjectById(Guid id)
+        {
+            var rs = new ResponseModel<Nproject>();
+            try
+            {
+                rs.Data = _db.Nprojects.Where(db=>db.Id == id).FirstOrDefault();
+                rs.IsSuccess = true;
+                rs.Message = "Get Project Successfully";
+                rs.Code = 200;
+            }
+            catch (Exception ex)
+            {
+                rs.IsSuccess = false;
+                rs.Message = ex.Message;
+                rs.Code = 500;
+            }
+            return rs;
+        }
+
+        public ResponseModel<List<Nproject>> GetProjectLists()
+        {
+            var rs = new ResponseModel<List<Nproject>>();
+            try
+            {
+                rs.Data = _db.Nprojects.ToList();
+                rs.IsSuccess = true;
+                rs.Message = "Get Project Lists Successfully";
+                rs.Code = 200;
+            }
+            catch (Exception ex)
+            {
+                rs.IsSuccess = false;
+                rs.Message = ex.Message;
+                rs.Code = 500;
+            }
+            return rs;
+        }
+        public ResponseModel<List<Nproject>> GetProjectActiveLists()
+        {
+            var rs = new ResponseModel<List<Nproject>>();
+            try
+            {
+                rs.Data = _db.Nprojects.Where(db=>db.Status == 1).ToList();
+                rs.IsSuccess = true;
+                rs.Message = "Get Project Lists Successfully";
+                rs.Code = 200;
+            }
+            catch (Exception ex)
+            {
+                rs.IsSuccess = false;
+                rs.Message = ex.Message;
+                rs.Code = 500;
+            }
+            return rs;
+        }
+
         #endregion
 
         #region Delete

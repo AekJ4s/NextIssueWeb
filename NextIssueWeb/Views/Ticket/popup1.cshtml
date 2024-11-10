@@ -1,0 +1,375 @@
+﻿@{
+    ViewData["Title"] = "popup create issue";
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    var User = HttpContextAccessor.HttpContext.Session.GetString("Username");
+    var Token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+    var Permission = HttpContextAccessor.HttpContext.Session.GetString("Permission");
+    var Id = HttpContextAccessor.HttpContext.Session.GetString("Id");
+
+}
+
+@model Metadata.NissueCreate
+<form class="form" asp-controller="Ticket" asp-action="OpenTicket" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <div class="row">
+        <div class="col">
+            <p class="title">Open Ticket </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <span>Project</span><span class="text-danger ms-1">*</span>
+            <select asp-for="ProjectId" id="ProjectId" class="form-control">
+                <option selected disabled value="@Guid.Empty">select Project</option>
+                @foreach (var record in Model.ProjectLists)
+                {
+                    <option value="@record.Id">@record.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <span>Ticket Name</span><span class="text-danger ms-1">*</span>
+            <input asp-for="Name" type="text" class="input form-control" placeholder="Keyword" required>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-6">
+            <span>Status</span><span class="text-danger ms-1">*</span>
+            <select asp-for="StatusId" id="StatusId" class="form-control">
+                <option selected disabled value="0">select status</option>
+                @foreach (var record in Model.StatusLists)
+                {
+                    <option value="@record.Id">@record.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-6">
+            <span>importance</span><span class="text-danger ms-1">*</span>
+            <select asp-for="ImportantId" id="ImportantId" class="form-control">
+                <option selected disabled value="0">select level of issue</option>
+                @foreach (var record in Model.ImportanceLists)
+                {
+                    <option value="@record.Id">@record.Name</option>
+                }
+            </select>
+        </div>
+        <div class="row mt-3 ms-2">
+            <div class="col-6">
+                <div class="form-check">
+                    <input asp-for="Checkbox1" class="form-check-input" id="Checkbox1" type="checkbox" onclick="toggleUserList()">
+                    <label class="form-check-label" for="Checkbox1">
+                        Select by user
+                    </label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-check">
+                    <input asp-for="Checkbox2" class="form-check-input" id="Checkbox2" type="checkbox" onclick="togglePicture()">
+                    <label class="form-check-label" for="Checkbox2">
+                        Upload Picture
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <span>Responsible</span><span class="text-danger ms-1">*</span>
+                <select asp-for="ResponsibleGroupId" id="ResponsibleGroupId" class="form-control" onchange="jrGetUserByGroup(this.value)">
+                    <option selected disabled value="0">select group</option>
+                    @foreach (var record1 in Model.PositionLists)
+                    {
+                        <option value="@record1.Id">@record1.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12 mt-3">
+                <div id="userListContainer" style="display: none;">
+                    <span>Responsible by User</span><span class="text-danger ms-1">*</span>
+                    <select asp-for="ResponsibleId" id="ResponsibleId" class="form-control">
+                        <option selected disabled value="0">select user</option>
+                        @foreach (var record in Model.UserLists)
+                        {
+                            <option value="@record.Id">@record.Username</option>
+                        }
+                    </select>
+                </div>
+            </div
+            <div class="col-12 mt-3">
+               <div id="PictureContainer" style="display: none;">
+                    <span>Upload Picture</span><span class="text-danger ms-1">*</span>
+                    <input asp-for="Picture" type="file" multiple placeholder="select file upload" onchange="previewFiles()" />
+                    <div id="previewContainer" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="submit mt-2" type="submit">Open Ticket</button>
+</form>
+<script>
+    function previewFiles() {
+        var previewContainer = document.getElementById("previewContainer");
+        previewContainer.innerHTML = ""; // ล้างเนื้อหาก่อนแสดงใหม่
+        var files = document.getElementById("PictureContainer").querySelector('input[type="file"]').files;
+
+        if (files.length === 0) {
+            previewContainer.innerHTML = "<p>No files selected</p>";
+        } else {
+            Array.from(files).forEach(file => {
+                var fileReader = new FileReader();
+            
+                fileReader.onload = function (e) {
+                    var img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.style.maxWidth = "100px";
+                    img.style.marginRight = "10px";
+                    img.style.borderRadius = "5px";
+                    previewContainer.appendChild(img);
+                };
+
+                fileReader.readAsDataURL(file);
+            });
+        }
+    }
+
+</script>
+
+<script>
+
+    function validateForm() {
+        var statusId = document.getElementById("StatusId").value;
+        var responsibleGroupId = document.getElementById("ResponsibleGroupId").value;
+        var responsibleId = document.getElementById("ResponsibleId").value;
+        var importanceId = document.getElementById("ImportantId").value;
+        var checkbox = document.getElementById("Checkbox1");
+        var projectId = document.getElementById("ProjectId").value;
+
+
+        // ตรวจสอบว่า Project ถูกเลือก
+        if (projectId === "00000000-0000-0000-0000-000000000000") {
+            alert("Please select Project");
+            return false;
+        }
+
+        // ตรวจสอบว่า Status ถูกเลือก
+        if (statusId == "0") {
+            alert("Please select status");
+            return false;
+        }
+         // ตรวจสอบว่า Importance ถูกเลือก
+        if (importanceId === "0") {
+            alert("Please select level of issue");
+            return false;
+        }
+
+        // ตรวจสอบว่า ResponsibleGroup ถูกเลือก
+        if (responsibleGroupId == "0") {
+            alert("Please select ResponsibleGroup");
+            return false;
+        }
+
+        // ตรวจสอบว่า Checkbox ถูกติ๊ก และ ResponsibleGroupId ต้องไม่ใช่ 0
+        if (checkbox.checked && responsibleGroupId == "0") {
+            alert("Please select ResponsibleGroup");
+            return false;
+        }
+
+        // ตรวจสอบว่า Checkbox ถูกติ๊ก, ResponsibleGroupId ไม่ใช่ 0 และ ResponsibleId ไม่ใช่ 0
+        if (checkbox.checked && responsibleGroupId != "0" && responsibleId == "0") {
+            alert("Please select Responsible User");
+            return false;
+        }
+
+        // ตรวจสอบว่า Checkbox ถูกติ๊ก, และมีการเลือกไฟล์
+        var checkboxPic = document.getElementById("Checkbox2");
+        var pictureInput = document.querySelector("input[type='file']");
+        if (checkboxPic.checked && (!pictureInput.files || pictureInput.files.length === 0)) {
+            alert("Please select a picture you want to upload.");
+            return false;
+        }
+
+        return true; // ให้ฟอร์มส่งข้อมูลหากไม่มีการตรวจสอบที่ผิดพลาด
+    }
+
+    function toggleUserList() {
+        var checkbox = document.getElementById("Checkbox1");
+        var userListContainer = document.getElementById("userListContainer");
+
+        if (checkbox.checked) {
+            userListContainer.style.display = "block";
+        } else {
+            userListContainer.style.display = "none";
+        }
+    }
+
+    function togglePicture() {
+        var checkbox = document.getElementById("Checkbox2");
+        var userListContainer = document.getElementById("PictureContainer");
+
+        if (checkbox.checked) {
+            userListContainer.style.display = "block";
+        } else {
+            userListContainer.style.display = "none";
+        }
+    }
+
+    function jrGetUserByGroup(groupId) {
+        var checkbox = document.getElementById("Checkbox1");
+        var userListContainer = document.getElementById("userListContainer");
+        var userSelect = userListContainer.querySelector("select");
+        console.log("Group Id ", groupId);
+        console.log("json url : ", `/Issue/jrGetUserByGroup?groupId=${groupId}`);
+
+        fetch(`/Issue/jrGetUserByGroup?groupId=${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                userSelect.innerHTML = '<option selected disabled value="0">select user</option>';
+                data.forEach(user => {
+                    var option = document.createElement("option");
+                    option.value = user.id;
+                    option.text = user.username;
+                    userSelect.appendChild(option);
+                });
+
+                if (checkbox.checked) {
+                    userListContainer.style.display = "block";
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+<style>
+    /* From Uiverse.io by Yaya12085 */ 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 1280px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  color: darkgoldenrod;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.title::before,.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+            background-color: darkgoldenrod;
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+            background-color: darkgoldenrod;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.message, .signin {
+  color: rgba(88, 87, 87, 0.822);
+  font-size: 14px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a {
+            color: darkgoldenrod;
+}
+
+.signin a:hover {
+                text-decoration: underline darkgoldenrod;
+}
+
+.flex {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+}
+
+.form label {
+  position: relative;
+}
+
+.form label .input {
+  width: 100%;
+  padding: 10px 10px 20px 10px;
+  outline: 0;
+  border: 1px solid rgba(105, 105, 105, 0.397);
+  border-radius: 10px;
+}
+
+.form label .input + span {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  color: grey;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown + span {
+  top: 15px;
+  font-size: 0.9em;
+}
+
+.form label .input:focus + span,.form label .input:valid + span {
+  top: 30px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.form label .input:valid + span {
+  color: green;
+}
+
+.submit {
+  border: none;
+  outline: none;
+  background-color: darkgoldenrod;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  transform: .3s ease;
+}
+
+.submit:hover {
+    background-color: darkgreen;
+}
+
+@@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+</style>

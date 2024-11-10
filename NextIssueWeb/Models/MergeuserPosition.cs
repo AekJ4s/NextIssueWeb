@@ -5,7 +5,7 @@ namespace NextIssueWeb.Models;
 
 public partial class MergeuserPosition
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     public int? PositionId { get; set; }
 

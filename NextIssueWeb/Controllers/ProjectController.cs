@@ -72,6 +72,7 @@ namespace NextIssueWeb.Controllers
                 var permission = HttpContext.Session.GetString("Permission");
                 if (user != null && token != null)
                 {
+                    model.UserId = int.Parse(id);
                     var rs = _pjSv.CreateProject(model);
                     if (rs.IsSuccess == true)
                     {

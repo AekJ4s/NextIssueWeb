@@ -52,7 +52,7 @@ namespace NextIssueWeb.Controllers
                     };
                     _lgSv.CreateLog(nlogger);
                     var token = _acSv.GenerateToken(form.Username, form.Password);
-                    var per = _acSv.GetPemissionUserById(rs.Data.Id).Data;
+                    var per = _acSv.GetPermissionUserById(rs.Data.Id).Data;
                     var permission = per.OrderBy(db => db.Name).FirstOrDefault();
                     HttpContext.Session.SetString("Username", rs.Data.Username);
                     HttpContext.Session.SetString("Id", rs.Data.Id.ToString());

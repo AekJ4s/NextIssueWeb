@@ -6,44 +6,64 @@ using System.Linq;
 
 namespace NextIssueWeb.Services
 {
-    public class StatusSv : Controller
+    public class PictureSv : Controller
     {
         public NextIssueContext _db;
 
         public string _config;
         private string encrypword = "NextIssueSystemForAuthenticationKeyAndSendBackToMe";
-        readonly string Services = "LoggerSv";
-        public StatusSv(NextIssueContext context)
+        readonly string Services = "PictureSv";
+        public PictureSv(NextIssueContext context)
         {
             _db = context;
         }
-        public StatusSv(string config)
+        public PictureSv(string config)
         {
             _config = config;
         }
+
         #region Create
-        public ResponseModel<Nstatus> CreateProject(Metadata.NstatusCreate record)
+        public ResponseModel<Npicture> CreatePicture(Npicture record)
         {
-            var rs = new ResponseModel<Nstatus>();
+            var rs = new ResponseModel<Npicture>();
             try
             {
-                Nstatus nstatus = new Nstatus()
+                Npicture npicture = new Npicture()
                 {
-                    Name = record.Name,
-                    TaskUse = record.TaskUse,
-                    CreateBy = record.UserId,
-                    UpdateBy = record.UserId,
-                    CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now,
+                    Picture = record.Picture,
+                    UploadDate = DateTime.Now,
                 };
-                _db.Nstatuses.Add(nstatus);
+                _db.Npictures.Add(npicture);
                 _db.SaveChanges();
+                rs.Data = npicture;
                 rs.IsSuccess = true;
-                rs.Message = "Status Create Successfully";
+                rs.Message = "Picture Create Successfully";
                 rs.Code = 200;
             }
             catch (Exception ex)
             {
+                rs.IsSuccess = false;
+                rs.Message = ex.Message;
+                rs.Code = 500;
+            }
+            return rs;
+        }
+
+        public ResponseModel<MergeissuePicture> MergeIssueWithPicture(MergeissuePicture record)
+        {
+            var rs = new ResponseModel<MergeissuePicture>();
+            try
+            {
+                _db.MergeissuePictures.Add(record);
+                _db.SaveChanges();
+                rs.Data = record;
+                rs.IsSuccess = true;
+                rs.Message = "Merge Picture Successfully";
+                rs.Code = 200;
+            }
+            catch (Exception ex)
+            {
+                rs.Data = null;
                 rs.IsSuccess = false;
                 rs.Message = ex.Message;
                 rs.Code = 500;
@@ -60,23 +80,6 @@ namespace NextIssueWeb.Services
             {
                 rs.Data = _db.Nstatuses.Where(db => db.TaskUse == taskId).ToList();
                 rs.Code = 200;
-            }
-            catch (Exception ex)
-            {
-                rs.IsSuccess = false;
-                rs.Message = ex.Message;
-                rs.Code = 500;
-            }
-            return rs;
-        }
-        public ResponseModel<Nstatus> GetStatusById(int taskId)
-        {
-            var rs = new ResponseModel<Nstatus>();
-            try
-            {
-                rs.Data = _db.Nstatuses.Where(db => db.Id == taskId).FirstOrDefault();
-                rs.Code = 200;
-                rs.Message = "Get Status Successfully";
             }
             catch (Exception ex)
             {

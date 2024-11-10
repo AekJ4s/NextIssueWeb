@@ -1,4 +1,5 @@
 using NextIssueWeb.Data;
+using NextIssueWeb.Models;
 using NextIssueWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,10 @@ builder.Services.AddScoped<LoggerSv>();
 builder.Services.AddScoped<ProjectSv>();
 builder.Services.AddScoped<StatusSv>();
 builder.Services.AddScoped<IssueSv>();
+builder.Services.AddScoped<PositionSv>();
+builder.Services.AddScoped<ImportanceSv>();
+builder.Services.AddScoped<PictureSv>();
+
 
 
 builder.Services.AddDistributedMemoryCache(); // ใช้สำหรับเก็บข้อมูล Session ในหน่วยความจำ
