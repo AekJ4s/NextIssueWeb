@@ -28,14 +28,9 @@ namespace NextIssueWeb.Services
             var rs = new ResponseModel<Npicture>();
             try
             {
-                Npicture npicture = new Npicture()
-                {
-                    Picture = record.Picture,
-                    UploadDate = DateTime.Now,
-                };
-                _db.Npictures.Add(npicture);
+                _db.Npictures.Add(record);
                 _db.SaveChanges();
-                rs.Data = npicture;
+                rs.Data = record;
                 rs.IsSuccess = true;
                 rs.Message = "Picture Create Successfully";
                 rs.Code = 200;
@@ -49,36 +44,18 @@ namespace NextIssueWeb.Services
             return rs;
         }
 
-        public ResponseModel<MergeissuePicture> MergeIssueWithPicture(MergeissuePicture record)
-        {
-            var rs = new ResponseModel<MergeissuePicture>();
-            try
-            {
-                _db.MergeissuePictures.Add(record);
-                _db.SaveChanges();
-                rs.Data = record;
-                rs.IsSuccess = true;
-                rs.Message = "Merge Picture Successfully";
-                rs.Code = 200;
-            }
-            catch (Exception ex)
-            {
-                rs.Data = null;
-                rs.IsSuccess = false;
-                rs.Message = ex.Message;
-                rs.Code = 500;
-            }
-            return rs;
-        }
         #endregion
 
         #region Get
-        public ResponseModel<List<Nstatus>> GetListsStatus(int taskId)
+
+        public ResponseModel<List<Npicture>> GetPictureListByTicketId(int ticketId)
         {
-            var rs = new ResponseModel<List<Nstatus>>();
+            var rs = new ResponseModel<List<Npicture>>();
             try
             {
-                rs.Data = _db.Nstatuses.Where(db => db.TaskUse == taskId).ToList();
+                rs.Data = _db.Npictures.Where(x => x.TicketId == ticketId).ToList();
+                rs.IsSuccess = true;
+                rs.Message = "Get Picture Lists Successfully";
                 rs.Code = 200;
             }
             catch (Exception ex)

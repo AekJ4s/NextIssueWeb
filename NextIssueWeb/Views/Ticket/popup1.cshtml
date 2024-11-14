@@ -8,7 +8,7 @@
 
 }
 
-@model Metadata.NissueCreate
+@model ViewModel
 <form class="form" asp-controller="Ticket" asp-action="OpenTicket" enctype="multipart/form-data" onsubmit="return validateForm()">
     <div class="row">
         <div class="col">
@@ -18,9 +18,9 @@
     <div class="row">
         <div class="col-12">
             <span>Project</span><span class="text-danger ms-1">*</span>
-            <select asp-for="ProjectId" id="ProjectId" class="form-control">
+            <select asp-for="Nticket.ProjectId" id="ProjectId" class="form-control">
                 <option selected disabled value="@Guid.Empty">select Project</option>
-                @foreach (var record in Model.ProjectLists)
+                @foreach (var record in Model.projectsLists)
                 {
                     <option value="@record.Id">@record.Name</option>
                 }
@@ -30,15 +30,15 @@
     <div class="row">
         <div class="col-12">
             <span>Ticket Name</span><span class="text-danger ms-1">*</span>
-            <input asp-for="Name" type="text" class="input form-control" placeholder="Keyword" required>
+            <input asp-for="Nticket.Name" type="text" class="input form-control" placeholder="Keyword" required>
         </div>
     </div>
     <div class="row mt-1">
         <div class="col-6">
             <span>Status</span><span class="text-danger ms-1">*</span>
-            <select asp-for="StatusId" id="StatusId" class="form-control">
+            <select asp-for="Nticket.StatusId" id="StatusId" class="form-control">
                 <option selected disabled value="0">select status</option>
-                @foreach (var record in Model.StatusLists)
+                @foreach (var record in Model.statusLists)
                 {
                     <option value="@record.Id">@record.Name</option>
                 }
@@ -46,14 +46,25 @@
         </div>
         <div class="col-6">
             <span>importance</span><span class="text-danger ms-1">*</span>
-            <select asp-for="ImportantId" id="ImportantId" class="form-control">
+            <select asp-for="Nticket.ImportantId" id="ImportantId" class="form-control">
                 <option selected disabled value="0">select level of issue</option>
-                @foreach (var record in Model.ImportanceLists)
+                @foreach (var record in Model.importantsLists)
                 {
                     <option value="@record.Id">@record.Name</option>
                 }
             </select>
         </div>
+    </div>
+      <div class="row mt-1">
+        <div class="col-6">
+            <span>Deadline</span><span class="text-danger ms-1">*</span>
+            <input asp-for="Nticket.DeadlineDate" id="DeadlineDate" class="form-control"/>
+        </div>
+        <div class="col-6">
+            <span>CloseDate</span><span class="text-danger ms-1">*</span>
+            <input asp-for="Nticket.CloseDate" id="CloseDate" class="form-control"/>
+        </div>
+    </div>
         <div class="row mt-3 ms-2">
             <div class="col-6">
                 <div class="form-check">
@@ -75,9 +86,9 @@
         <div class="row mt-3">
             <div class="col-12">
                 <span>Responsible</span><span class="text-danger ms-1">*</span>
-                <select asp-for="ResponsibleGroupId" id="ResponsibleGroupId" class="form-control" onchange="jrGetUserByGroup(this.value)">
+                <select asp-for="Nticket.ResponsibleGroupId" id="ResponsibleGroupId" class="form-control" onchange="jrGetUserByGroup(this.value)">
                     <option selected disabled value="0">select group</option>
-                    @foreach (var record1 in Model.PositionLists)
+                    @foreach (var record1 in Model.PositionList)
                     {
                         <option value="@record1.Id">@record1.Name</option>
                     }
@@ -86,7 +97,7 @@
             <div class="col-12 mt-3">
                 <div id="userListContainer" style="display: none;">
                     <span>Responsible by User</span><span class="text-danger ms-1">*</span>
-                    <select asp-for="ResponsibleId" id="ResponsibleId" class="form-control">
+                    <select asp-for="Nticket.ResponsibleId" id="ResponsibleId" class="form-control">
                         <option selected disabled value="0">select user</option>
                         @foreach (var record in Model.UserLists)
                         {
@@ -94,18 +105,23 @@
                         }
                     </select>
                 </div>
-            </div
+            </div>
             <div class="col-12 mt-3">
                <div id="PictureContainer" style="display: none;">
                     <span>Upload Picture</span><span class="text-danger ms-1">*</span>
-                    <input asp-for="Picture" type="file" multiple placeholder="select file upload" onchange="previewFiles()" />
+                    <input asp-for="formFilesLists" type="file" multiple placeholder="select file upload" onchange="previewFiles()" />
                     <div id="previewContainer" class="mt-2"></div>
                 </div>
             </div>
         </div>
     </div>
-
-    <button class="submit mt-2" type="submit">Open Ticket</button>
+    <hr/>
+    <div class="row">
+        <div class="col-12 text-end">
+            <button class="submit mt-2" type="submit">Open Ticket</button>
+        </div>
+    </div>
+    
 </form>
 <script>
     function previewFiles() {
@@ -193,6 +209,7 @@
     }
 
     function toggleUserList() {
+        console.log("try to open user lists")
         var checkbox = document.getElementById("Checkbox1");
         var userListContainer = document.getElementById("userListContainer");
 
@@ -203,7 +220,9 @@
         }
     }
 
+    
     function togglePicture() {
+        console.log("try to open picture upload")
         var checkbox = document.getElementById("Checkbox2");
         var userListContainer = document.getElementById("PictureContainer");
 
@@ -219,13 +238,14 @@
         var userListContainer = document.getElementById("userListContainer");
         var userSelect = userListContainer.querySelector("select");
         console.log("Group Id ", groupId);
-        console.log("json url : ", `/Issue/jrGetUserByGroup?groupId=${groupId}`);
+        
 
-        fetch(`/Issue/jrGetUserByGroup?groupId=${groupId}`)
+        fetch(`/Ticket/jrGetUserByGroup?groupId=${groupId}`)
             .then(response => response.json())
             .then(data => {
                 userSelect.innerHTML = '<option selected disabled value="0">select user</option>';
                 data.forEach(user => {
+                    console.log(user);
                     var option = document.createElement("option");
                     option.value = user.id;
                     option.text = user.username;
@@ -238,6 +258,8 @@
             })
             .catch(error => console.error('Error:', error));
     }
+
+    
 </script>
 
 <style>

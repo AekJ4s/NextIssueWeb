@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using NextIssueWeb.Data;
 using NextIssueWeb.Models;
+using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static NextIssueWeb.Models.Metadata;
+using static NextIssueWeb.Models.ViewModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NextIssueWeb.Services
@@ -91,44 +92,12 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<List<Metadata.NuserWithPermission>> GetAllUserPermission()
-        {
-            var rs = new ResponseModel<List<Metadata.NuserWithPermission>>();
-            try
-            {
-                var userLists = _db.Nusers.ToList();
-                var userWithpermission = new List<Metadata.NuserWithPermission>();
-                foreach (var user in userLists)
-                {
-                    var record = new Metadata.NuserWithPermission()
-                    {
-                        Id = user.Id,
-                        Username = user.Username,
-                        Aka = user.Aka,
-                        Permission = GetPositionById(user.Id).Data.Name,
-                    };
-                    userWithpermission.Add(record);
-                }
-                rs.Data = userWithpermission;
-                rs.Code = 200;
-                rs.Message = "Get List Of User Successfully";
-                rs.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                rs.IsSuccess = false;
-                rs.Code = 500;
-                rs.Message = ex.Message;
-            }
-            return rs;
-        }
         public ResponseModel<Nposition> GetPositionById(int id)
         {
             var returnThis = new ResponseModel<Nposition>();
             try
             {
-                var merge = _db.MergeuserPositions.Where(db => db.UserId == id).OrderBy(x => x.PositionId == 5).FirstOrDefault();
-                returnThis.Data = _db.Npositions.Where(db => db.Id == merge.Id).FirstOrDefault();
+                returnThis.Data = _db.Npositions.Where(x => x.Id == id).FirstOrDefault();
                 returnThis.Code = 200;
                 returnThis.Message = "Get position successfully";
             }
@@ -140,6 +109,41 @@ namespace NextIssueWeb.Services
             }
             return returnThis;
         }
+        public ResponseModel<List<Nposition>> GetAllPosition()
+        {
+            var returnThis = new ResponseModel<List<Nposition>>();
+            try
+            {
+                returnThis.Data = _db.Npositions.ToList();
+                returnThis.Code = 200;
+                returnThis.Message = "Get position successfully";
+            }
+            catch (Exception ex)
+            {
+                returnThis.Data = null;
+                returnThis.Code = 500;
+                returnThis.Message = "Get position fail :" + ex.Message;
+            }
+            return returnThis;
+        }
+        public ResponseModel<List<Nposition>> GetListsPositionByGroupId(int groupId)
+        {
+            var returnThis = new ResponseModel<List<Nposition>>();
+            try
+            {
+                returnThis.Data = _db.Npositions.ToList();
+                returnThis.Code = 200;
+                returnThis.Message = "Get position successfully";
+            }
+            catch (Exception ex)
+            {
+                returnThis.Data = null;
+                returnThis.Code = 500;
+                returnThis.Message = "Get position fail :" + ex.Message;
+            }
+            return returnThis;
+        }
+
         public ResponseModel<Nuser> GetUserById(int id)
         {
             ResponseModel<Nuser> rs = new ResponseModel<Nuser>();
@@ -163,6 +167,32 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
+        public ResponseModel<List<Nuser>> GetListUserByGroupId(int id)
+        {
+            ResponseModel<List<Nuser>> rs = new ResponseModel<List<Nuser>>();
+            try
+            {
+                var data = _db.Nusers
+                  .Where(db => db.PositionId == id)
+                  .ToList();
+
+                // ตั้งค่า Password เป็น null สำหรับทุกรายการในลิสต์
+                data.ForEach(user => user.Password = null);
+
+                rs.Data = data;
+                rs.Code = 200;
+                rs.Message = "Get User Successfully";
+                rs.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                rs.Code = 500;
+                rs.Message = "Cannot User Successfully";
+                rs.IsSuccess = true;
+            }
+            return rs;
+        }
+
         public ResponseModel<Nuser> GetUserByName(string username)
         {
             ResponseModel<Nuser> rs = new ResponseModel<Nuser>();
@@ -183,7 +213,6 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-
         public ResponseModel<List<Nuser>> GetUserListsByGroupId(int id)
         {
             ResponseModel<List<Nuser>> rs = new ResponseModel<List<Nuser>>();
@@ -202,118 +231,17 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-
-        public ResponseModel<List<NuserWithPermission>> GetUserPermissionListsByGroupId(int id)
-        {
-            ResponseModel<List<NuserWithPermission>> rs = new ResponseModel<List<NuserWithPermission>>();
-            try
-            {
-                    List<int> UserIdLst = _db.MergeuserPositions
-                   .Where(db => db.PositionId == id)
-                   .Select(x => x.UserId)
-                   .Where(x => x.HasValue) // กรองค่า null ออก
-                   .Select(x => x.Value)   // ดึงค่า int ออกมา
-                   .Distinct()
-                   .ToList();
-
-
-                var returnThis = new List<NuserWithPermission>();
-                foreach ( var item in UserIdLst)
-                {
-                    var user = _db.Nusers.Where(db => db.Id == item).FirstOrDefault();
-                    var _newRecord = new NuserWithPermission();
-                    _newRecord.Username = user.Username;
-                    _newRecord.Aka = user.Aka;
-                    _newRecord.Id = user.Id;
-                    _newRecord.Permission = _db.Npositions.Where(db=>db.Id == id).FirstOrDefault().Name = null ?? "?";
-                    returnThis.Add(_newRecord);
-                }
-                rs.Data = returnThis;
-                rs.Code = 200;
-                rs.Message = "Get User Lists By Id Permission Successfully";
-                rs.IsSuccess = true;
-            }
-            catch (Exception e)
-            {
-                rs.Code = 500;
-                rs.Message = "Cannot User Successfully";
-                rs.IsSuccess = true;
-            }
-            return rs;
-        }
-
-        public ResponseModel<List<Nposition>> GetPermissionUserById(int id)
-        {
-            ResponseModel<List<Nposition>> rs = new ResponseModel<List<Nposition>>();
-            try
-            {
-                var UxP = _db.MergeuserPositions.Where(db=>db.UserId == id).OrderByDescending(db=>db.PositionId == 5).ToList();
-                rs.Data = _db.Npositions.ToList().Where(db => db.Id == UxP.First().PositionId).ToList();
-                rs.Code = 200;
-                rs.Message = "Get User Successfully";
-                rs.IsSuccess = true;
-            }
-            catch (Exception e)
-            {
-                rs.Code = 500;
-                rs.Message = "Cannot User Successfully";
-                rs.IsSuccess = true;
-            }
-            return rs;
-        }
-
-        public ResponseModel<NuserWithPermission> GetPermissionUserById2(int id)
-        {
-            ResponseModel<NuserWithPermission> rs = new ResponseModel<NuserWithPermission>();
-            try
-            {
-                var UxP = _db.MergeuserPositions.Where(db => db.UserId == id).OrderByDescending(db => db.PositionId == 5).ToList();
-                var user = _db.Nusers.Where(db => db.Id == id).FirstOrDefault();
-                NuserWithPermission detail = new NuserWithPermission()
-                {
-                    Id = UxP.First().Id,
-                    Aka = user.Aka,
-                    Username = user.Username,
-                    PermissionId = UxP.First().PositionId,
-                    Permission = _db.Npositions.Where(db => db.Id == UxP.First().PositionId).FirstOrDefault().Name
-                };
-                rs.Data = detail;
-                rs.Code = 200;
-                rs.Message = "Get User Successfully";
-                rs.IsSuccess = true;
-            }
-            catch (Exception e)
-            {
-                rs.Code = 500;
-                rs.Message = "Cannot User Successfully";
-                rs.IsSuccess = true;
-            }
-            return rs;
-        }
-
         #endregion
 
         #region Insert
-        public ResponseModel<Nuser> InsertUser(Metadata.NuserCreate data)
+        public ResponseModel<Nuser> InsertUser(Nuser data)
         {
             var rs = new ResponseModel<Nuser>();
             try
             {
-                Nuser user = new Nuser()
-                {
-                    Username = data.Username,
-                    Password = Encoding.UTF8.GetBytes(data.Password).ToString(),
-                    Aka = data.Aka,
-                    //CreateBy = data.UserId
-                    //UpdateBy = data.UserId
-
-                    CreateDate = DateTime.Now,
-
-                    UpdateDate = DateTime.Now
-                };
-                rs.Data = GetUserById(user.Id).Data;
+               _db.Nusers.Add(data);
                 _db.SaveChanges();
-
+                rs.Data = data;
                 rs.Code = 200;
                 rs.Message = "Insert User Successfully";
                 rs.IsSuccess = true;
@@ -326,28 +254,13 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<List<Nuser>> InsertUserLists(List<Metadata.NuserCreate> data)
+        public ResponseModel<List<Nuser>> InsertUserLists(List<Nuser> data)
         {
             var rs = new ResponseModel<List<Nuser>>();
             try
             {
-                var userlst = new List<Nuser>();
-                foreach (var record in data)
-                {
-                    Nuser user = new Nuser()
-                    {
-                        Username = record.Username,
-                        Password = Encoding.UTF8.GetBytes(record.Password).ToString(),
-                        Aka = record.Aka,
-                        //Create = record.UserId,
-                        //UpdateBy = record.UserId,
-                        CreateDate = DateTime.Now,
-                        UpdateDate = DateTime.Now
-                    };
-                    userlst.Add(user);
-                }
-                _db.AddRange(userlst);
-                rs.Data = userlst;
+                _db.AddRange(data);
+                rs.Data = data;
                 rs.Code = 200;
                 rs.Message = "Insert User Successfully";
                 rs.IsSuccess = true;
@@ -365,16 +278,16 @@ namespace NextIssueWeb.Services
 
         #region Update
 
-        public ResponseModel<Nuser> UpdateUser(Metadata.NuserUpdate data)
+        public ResponseModel<Nuser> UpdateUser(ViewModel data)
         {
             var rs = new ResponseModel<Nuser>();
             try
             {
-                Nuser user = GetUserById(data.Id).Data;
+                Nuser user = GetUserById(data.Nuser.Id).Data;
                 user.UpdateDate = DateTime.Now;
-                //UpdateBy = record.UserId,
-                user.Username = (data.Username != null && data.Username != user.Username) ? data.Username : user.Username;
-                user.Aka = (data.Aka != null && data.Aka != user.Aka) ? data.Aka : user.Aka;
+                user.UpdateBy = data.userId;
+                user.Username = (data.Nuser.Username != null && data.Nuser.Username != user.Username) ? data.Nuser.Username : user.Username;
+                user.Aka = (data.Nuser.Aka != null && data.Nuser.Aka != user.Aka) ? data.Nuser.Aka : user.Aka;
 
                 _db.Nusers.Update(user);
                 _db.SaveChanges();
@@ -392,25 +305,16 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<List<Nuser>> UpdateUserLists(List<Metadata.NuserUpdate> data)
+        public ResponseModel<List<Nuser>> UpdateUserLists(List<Nuser> data)
         {
             var rs = new ResponseModel<List<Nuser>>();
             try
             {
-                var userlst = new List<Nuser>();
-                foreach (var record in data)
-                {
-                    Nuser user = GetUserById(record.Id).Data;
-                    user.UpdateDate = DateTime.Now;
-                    //UpdateBy = data.UserId
-                    user.Username = (record.Username != null && record.Username != user.Username) ? record.Username : user.Username;
-                    user.Aka = (record.Aka != null && record.Aka != user.Aka) ? record.Aka : user.Aka;
-                    userlst.Add(user);
-                }
-                _db.UpdateRange(userlst);
+                
+                _db.UpdateRange(data);
                 _db.SaveChanges();
 
-                rs.Data = userlst;
+                rs.Data = data;
                 rs.Code = 200;
                 rs.Message = "Update User Successfully";
                 rs.IsSuccess = true;
@@ -423,7 +327,7 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<Nuser> ChangPassword(Metadata.NuserChangPassword data)
+        public ResponseModel<Nuser> ChangPassword(Nuser data)
         {
             var rs = new ResponseModel<Nuser>();
             try
@@ -477,7 +381,7 @@ namespace NextIssueWeb.Services
             }
             return rs;
         }
-        public ResponseModel<List<Nuser>> DeleteUserLists(List<Metadata.NuserUpdate> data)
+        public ResponseModel<List<Nuser>> DeleteUserLists(List<Nuser> data)
         {
             var rs = new ResponseModel<List<Nuser>>();
             try

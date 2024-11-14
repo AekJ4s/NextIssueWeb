@@ -22,7 +22,7 @@ namespace NextIssueWeb.Services
             _config = config;
         }
         #region Create
-        public ResponseModel<Nstatus> CreateProject(Metadata.NstatusCreate record)
+        public ResponseModel<Nstatus> CreateStatus(Nstatus record)
         {
             var rs = new ResponseModel<Nstatus>();
             try
@@ -31,8 +31,8 @@ namespace NextIssueWeb.Services
                 {
                     Name = record.Name,
                     TaskUse = record.TaskUse,
-                    CreateBy = record.UserId,
-                    UpdateBy = record.UserId,
+                    CreateBy = record.CreateBy,
+                    UpdateBy = record.UpdateBy,
                     CreateDate = DateTime.Now,
                     UpdateDate = DateTime.Now,
                 };
@@ -53,7 +53,7 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Get
-        public ResponseModel<List<Nstatus>> GetListsStatus(int taskId)
+        public ResponseModel<List<Nstatus>> GetListsStatusByTaskId(int taskId)
         {
             var rs = new ResponseModel<List<Nstatus>>();
             try
@@ -90,8 +90,40 @@ namespace NextIssueWeb.Services
         #endregion
 
         #region Delete
-
+        public ResponseModel<bool> DeleteStatusById(int id)
+        {
+            var rs = new ResponseModel<bool>();
+            try
+            {
+                var status = _db.Nstatuses.FirstOrDefault(db => db.Id == id);
+                if (status != null)
+                {
+                    _db.Nstatuses.Remove(status);
+                    _db.SaveChanges();
+                    rs.IsSuccess = true;
+                    rs.Data = true;
+                    rs.Message = "Status Deleted Successfully";
+                    rs.Code = 200;
+                }
+                else
+                {
+                    rs.IsSuccess = false;
+                    rs.Data = false;
+                    rs.Message = "Status not found";
+                    rs.Code = 404;
+                }
+            }
+            catch (Exception ex)
+            {
+                rs.IsSuccess = false;
+                rs.Data = false;
+                rs.Message = ex.Message;
+                rs.Code = 500;
+            }
+            return rs;
+        }
         #endregion
+
 
     }
 }

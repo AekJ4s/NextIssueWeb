@@ -13,5 +13,5 @@ public partial class Nimportant
 
     public DateTime? UpdateDate { get; set; }
 
-    public virtual ICollection<Nissue> Nissues { get; set; } = new List<Nissue>();
+    public virtual ICollection<Nticket> Ntickets { get; set; } = new List<Nticket>();
 }

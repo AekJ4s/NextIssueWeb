@@ -16,4 +16,8 @@ public partial class Nposition
     public int? CreateBy { get; set; }
 
     public int? UpdateBy { get; set; }
+
+    public virtual ICollection<Nticket> Ntickets { get; set; } = new List<Nticket>();
+
+    public virtual ICollection<Nuser> Nusers { get; set; } = new List<Nuser>();
 }

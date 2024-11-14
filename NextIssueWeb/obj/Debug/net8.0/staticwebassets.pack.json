@@ -21,6 +21,14 @@
       "PackagePath": "staticwebassets\\images\\background.jpg"
     },
     {
+      "Id": "C:\\Users\\admin\\Desktop\\NextIssueWeb\\NextIssueWeb\\wwwroot\\images\\l1.jpg",
+      "PackagePath": "staticwebassets\\images\\l1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\admin\\Desktop\\NextIssueWeb\\NextIssueWeb\\wwwroot\\images\\l2.jpg",
+      "PackagePath": "staticwebassets\\images\\l2.jpg"
+    },
+    {
       "Id": "C:\\Users\\admin\\Desktop\\NextIssueWeb\\NextIssueWeb\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

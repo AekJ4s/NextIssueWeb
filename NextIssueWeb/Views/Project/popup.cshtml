@@ -8,38 +8,45 @@
 
 }
 
-@model Metadata.NprojectCreate
+@model ViewModel
 <form class="form" asp-controller="Project" asp-action="CreateProject">
     <div class="row">
-        <div class="col">
+        <div class="col" style="vertical-align:middle">
             <p class="title">Create Project </p>
         </div>
     </div>
     <div class="row">
         <div class="col-6">
             <span>Project Name</span><span class="text-danger ms-1">*</span>
-            <input asp-for="Name" type="text" class="input form-control" required>
+            <input asp-for="@Model.Nproject.Name" type="text" class="input form-control" required>
         </div>
         
         <div class="col-6">
             <span>Project Start Date</span><span class="text-danger ms-1">*</span>
-            <input asp-for="CreateDate" placeholder="" type="date" class="input form-control">
+            <input asp-for="@Model.Nproject.CreateDate" placeholder="" type="date" class="input form-control" required>
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
+        <div class="col-10">
             <span>Status</span><span class="text-danger ms-1">*</span>
-            <select asp-for="Status" class="form-control">
-                @foreach (var record in Model.StatusLists)
+            <select asp-for="@Model.Nproject.Status" class="form-control">
+                @foreach (var record in Model.statusLists)
                 {
                     <option value="@record.Id">@record.Name</option>
                 }
             </select>
         </div>
+        
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-12 text-end">
+        <button class="submit" type="submit">Create</button>
+        </div>
     </div>
 
-   
-    <button class="submit mt-2" type="submit">Create</button>
+
+  
 </form>
 
 <style>
@@ -176,3 +183,17 @@
   }
 }
 </style>
+
+<script>
+    // ตรวจสอบว่า Checkbox ถูกติ๊ก และ ResponsibleGroupId ต้องไม่ใช่ 0
+    if (ProjectName == "") {
+        alert("Please Key Project Name");
+        return false;
+    }
+
+    // ตรวจสอบว่า Checkbox ถูกติ๊ก, ResponsibleGroupId ไม่ใช่ 0 และ ResponsibleId ไม่ใช่ 0
+    if (checkbox.checked && responsibleGroupId != "0" && responsibleId == "0") {
+        alert("Please select Responsible User");
+        return false;
+    }
+</script>

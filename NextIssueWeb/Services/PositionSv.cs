@@ -22,7 +22,7 @@ namespace NextIssueWeb.Services
             _config = config;
         }
         #region Create
-        public ResponseModel<Nposition> CreatePosition(Metadata.NpositionCreate record)
+        public ResponseModel<Nposition> CreatePosition(Nposition record)
         {
             var rs = new ResponseModel<Nposition>();
             try

@@ -22,28 +22,19 @@ namespace NextIssueWeb.Services
             _config = config;
         }
         #region Create
-        public ResponseModel<Nlogger> CreateLog(Metadata.NloggerCreate logger)
+        public ResponseModel<Nlogger> CreateLog(Nlogger logger)
         {
             var rs = new ResponseModel<Nlogger>();
             try
             {
-                Nlogger nlogger = new Nlogger()
-                {
-                    Name = logger.Name,
-                    Detail = logger.Detail,
-                    LogBy = logger.Loguser,
-                    Controller = logger.Controller,
-                    CreateDate = DateTime.Now,
-                    SystemId = logger.System_id
-                };
-                _db.Nloggers.Add(nlogger);
+                _db.Nloggers.Add(logger);
                 _db.SaveChanges();
                 var systemDeleteLog = _db.SystemOnDates.Where(db => db.Id == 1).FirstOrDefault();
                 if (systemDeleteLog != null && systemDeleteLog.SystemStatus == true)
                 {
                     DeleteLog(systemDeleteLog.SystemDaydeleted);
                 }
-                rs.Data = FindLogById(nlogger.Id).Data;
+                rs.Data = FindLogById(logger.Id).Data;
                 rs.IsSuccess = true;
                 rs.Message = "Log Create Successfully";
                 rs.Code = 200;

@@ -18,4 +18,6 @@ public partial class Nstatus
     public int UpdateBy { get; set; }
 
     public int TaskUse { get; set; }
+
+    public virtual ICollection<Nticket> Ntickets { get; set; } = new List<Nticket>();
 }

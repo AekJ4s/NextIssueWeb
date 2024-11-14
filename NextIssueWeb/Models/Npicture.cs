@@ -7,7 +7,11 @@ public partial class Npicture
 {
     public int Id { get; set; }
 
-    public byte[]? Picture { get; set; }
+    public byte[] Picture { get; set; } = null!;
 
-    public DateTime? UploadDate { get; set; }
+    public DateTime UploadDate { get; set; }
+
+    public int TicketId { get; set; }
+
+    public virtual Nticket Ticket { get; set; } = null!;
 }

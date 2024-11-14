@@ -17,11 +17,19 @@ public partial class Nuser
 
     public DateTime? UpdateDate { get; set; }
 
-    public Guid? CompanyId { get; set; }
-
     public int? CreateBy { get; set; }
 
     public int? UpdateBy { get; set; }
+
+    public int? PositionId { get; set; }
+
+    public Guid? CompanyId { get; set; }
+
+    public virtual ICollection<Nticket> NticketInformers { get; set; } = new List<Nticket>();
+
+    public virtual ICollection<Nticket> NticketResponsibles { get; set; } = new List<Nticket>();
+
+    public virtual Nposition? Position { get; set; }
 
     public virtual ICollection<SystemCompany> SystemCompanies { get; set; } = new List<SystemCompany>();
 }

@@ -30,35 +30,33 @@ namespace NextIssueWeb.Controllers
 
         public IActionResult LoginPage()
         {
-            Metadata.NuserLogin model = new Metadata.NuserLogin();
+            LoginForm model = new LoginForm();
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult LoginPage(Metadata.NuserCreate form)
+        public IActionResult LoginPage(LoginForm form)
         {
             try
             {
                 var rs = _acSv.Login(form.Username, form.Password);
                 if (rs.IsSuccess)
                 {
-                    var nlogger = new Metadata.NloggerCreate()
+                    var nlogger = new Nlogger
                     {
                         Name = "Login User @" + form.Username,
-                        Loguser = rs.Data.Id,
+                        LogBy = rs.Data.Id,
                         Detail = rs.Message,
                         Controller = Controller,
-                        System_id = 1
+                        SystemId = 1
                     };
                     _lgSv.CreateLog(nlogger);
                     var token = _acSv.GenerateToken(form.Username, form.Password);
-                    var per = _acSv.GetPermissionUserById(rs.Data.Id).Data;
-                    var permission = per.OrderBy(db => db.Name).FirstOrDefault();
-                    HttpContext.Session.SetString("Username", rs.Data.Username);
+                    var per = _acSv.GetPositionById(rs.Data.PositionId.Value).Data;
                     HttpContext.Session.SetString("Id", rs.Data.Id.ToString());
-                    var test = rs.Data.Id.ToString();
+                    HttpContext.Session.SetString("Username", rs.Data.Username);
                     HttpContext.Session.SetString("Token", token);
-                    HttpContext.Session.SetString("Permission", permission.Name?.ToString() ?? string.Empty);
+                    HttpContext.Session.SetString("Permission", per.Name?.ToString() ?? string.Empty);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -67,13 +65,13 @@ namespace NextIssueWeb.Controllers
                     {
                         return RedirectToAction("SqlError");
                     }
-                    var nlogger = new Metadata.NloggerCreate()
+                    var nlogger = new Nlogger()
                     {
                         Name = "Login User @" + form.Username,
-                        Loguser = 0,
+                        LogBy = 0,
                         Detail = rs.Message,
                         Controller = Controller,
-                        System_id = 1
+                        SystemId = 1
                     };
                     _lgSv.CreateLog(nlogger);
                     TempData["ErrorMessage"] = rs.Message;

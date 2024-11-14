@@ -16,17 +16,9 @@ public partial class NextIssueContext : DbContext
     {
     }
 
-    public virtual DbSet<MergeissuePicture> MergeissuePictures { get; set; }
-
-    public virtual DbSet<MergeprojectIssue> MergeprojectIssues { get; set; }
-
-    public virtual DbSet<MergeuserPosition> MergeuserPositions { get; set; }
-
     public virtual DbSet<Ncomment> Ncomments { get; set; }
 
     public virtual DbSet<Nimportant> Nimportants { get; set; }
-
-    public virtual DbSet<Nissue> Nissues { get; set; }
 
     public virtual DbSet<Nlogger> Nloggers { get; set; }
 
@@ -37,6 +29,8 @@ public partial class NextIssueContext : DbContext
     public virtual DbSet<Nproject> Nprojects { get; set; }
 
     public virtual DbSet<Nstatus> Nstatuses { get; set; }
+
+    public virtual DbSet<Nticket> Ntickets { get; set; }
 
     public virtual DbSet<Nuser> Nusers { get; set; }
 
@@ -52,65 +46,17 @@ public partial class NextIssueContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<MergeissuePicture>(entity =>
-        {
-            entity.ToTable("MERGEissue_picture");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IssueId).HasColumnName("issue_id");
-            entity.Property(e => e.PictureId).HasColumnName("picture_id");
-        });
-
-        modelBuilder.Entity<MergeprojectIssue>(entity =>
-        {
-            entity.ToTable("MERGEproject_issue");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.IssueId).HasColumnName("Issue_id");
-            entity.Property(e => e.ProjectId).HasColumnName("Project_id");
-
-            entity.HasOne(d => d.Issue).WithMany(p => p.MergeprojectIssues)
-                .HasForeignKey(d => d.IssueId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MERGEproject_issue_Nissue");
-
-            entity.HasOne(d => d.Project).WithMany(p => p.MergeprojectIssues)
-                .HasForeignKey(d => d.ProjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MERGEproject_issue_NProject");
-        });
-
-        modelBuilder.Entity<MergeuserPosition>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("MERGEuser_position");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("ID");
-            entity.Property(e => e.PositionId).HasColumnName("Position_id");
-            entity.Property(e => e.UserId).HasColumnName("User_id");
-
-            entity.HasOne(d => d.Position).WithMany()
-                .HasForeignKey(d => d.PositionId)
-                .HasConstraintName("FK_MERGEuser_position_Nposition");
-
-            entity.HasOne(d => d.User).WithMany()
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_MERGEuser_position_Nuser");
-        });
-
         modelBuilder.Entity<Ncomment>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("NComment");
+            entity.ToTable("NComment");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("ID");
-            entity.Property(e => e.IssueId).HasColumnName("Issue_id");
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.TicketId).HasColumnName("ticket_id");
+
+            entity.HasOne(d => d.Ticket).WithMany(p => p.Ncomments)
+                .HasForeignKey(d => d.TicketId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NComment_Nticket");
         });
 
         modelBuilder.Entity<Nimportant>(entity =>
@@ -125,30 +71,6 @@ public partial class NextIssueContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Nissue>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Nissue__3214EC27EA589DB5");
-
-            entity.ToTable("Nissue");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.ImportantId).HasColumnName("Important_id");
-            entity.Property(e => e.InformerId).HasColumnName("Informer_id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.ResponsibleGroupId).HasColumnName("ResponsibleGroup_id");
-            entity.Property(e => e.ResponsibleId).HasColumnName("Responsible_id");
-            entity.Property(e => e.StatusId).HasColumnName("Status_id");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Important).WithMany(p => p.Nissues)
-                .HasForeignKey(d => d.ImportantId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Nissue_Nimportant");
         });
 
         modelBuilder.Entity<Nlogger>(entity =>
@@ -183,7 +105,13 @@ public partial class NextIssueContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Picture).HasColumnName("picture");
+            entity.Property(e => e.TicketId).HasColumnName("Ticket_id");
             entity.Property(e => e.UploadDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Ticket).WithMany(p => p.Npictures)
+                .HasForeignKey(d => d.TicketId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Npicture_Nticket");
         });
 
         modelBuilder.Entity<Nposition>(entity =>
@@ -222,6 +150,57 @@ public partial class NextIssueContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Nticket>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Nissue__3214EC27EA589DB5");
+
+            entity.ToTable("Nticket");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CloseDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DeadlineDate).HasColumnType("datetime");
+            entity.Property(e => e.ImportantId).HasColumnName("Important_id");
+            entity.Property(e => e.InformerId).HasColumnName("Informer_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectId).HasColumnName("Project_id");
+            entity.Property(e => e.ResponsibleGroupId).HasColumnName("ResponsibleGroup_id");
+            entity.Property(e => e.ResponsibleId).HasColumnName("Responsible_id");
+            entity.Property(e => e.StatusId).HasColumnName("Status_id");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Important).WithMany(p => p.Ntickets)
+                .HasForeignKey(d => d.ImportantId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Nissue_Nimportant");
+
+            entity.HasOne(d => d.Informer).WithMany(p => p.NticketInformers)
+                .HasForeignKey(d => d.InformerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Nticket_Nuser");
+
+            entity.HasOne(d => d.Project).WithMany(p => p.Ntickets)
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Nticket_NProject");
+
+            entity.HasOne(d => d.ResponsibleGroup).WithMany(p => p.Ntickets)
+                .HasForeignKey(d => d.ResponsibleGroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Nticket_Nposition");
+
+            entity.HasOne(d => d.Responsible).WithMany(p => p.NticketResponsibles)
+                .HasForeignKey(d => d.ResponsibleId)
+                .HasConstraintName("FK_Nticket_Nuser1");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Ntickets)
+                .HasForeignKey(d => d.StatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Nticket_NStatus");
+        });
+
         modelBuilder.Entity<Nuser>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Nuser__3214EC27045305FB");
@@ -243,10 +222,15 @@ public partial class NextIssueContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.PositionId).HasColumnName("Position_id");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Position).WithMany(p => p.Nusers)
+                .HasForeignKey(d => d.PositionId)
+                .HasConstraintName("FK_Nuser_Nposition");
         });
 
         modelBuilder.Entity<SystemCompany>(entity =>
@@ -281,6 +265,8 @@ public partial class NextIssueContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
+            entity.Property(e => e.ActiveDate).HasColumnType("datetime");
+            entity.Property(e => e.ExpireDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<SystemOnDate>(entity =>

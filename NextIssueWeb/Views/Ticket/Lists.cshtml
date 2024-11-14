@@ -56,44 +56,117 @@
             }
 </style>
 
-@model List<Metadata.NissueLists>
-<div>
-    <table class="table text-white">
+@model ViewModel
+<div class="container d-flex justify-content-center">
+    <table class="table text-white" style="width: 90%; max-width: 1500px;">
         <thead class="text-center">
             <tr>
+                <th></th>
                 <th style="width:50px;">No.</th>
-                <th style="width:250px;">Project</th>
+                <th >Project</th>
                 <th style="width:250px;">Ticket</th>
                 <th>Status</th>
                 <th>Informer</th>
                 <th>Group</th>
                 <th>User</th>
                 <th>Ticket Date</th>
+                <th>Dead Line</th>
+                <th>Close Date</th>
             </tr>
         </thead>
         <tbody>
             @{
                 var i = 0;
-                foreach (var record in Model)
+                @if(Model.TicketsList.Count > 0)
                 {
-                    i++;
-                    <tr>
-                        <td>@i</td>
-                        <td><a href="">@record.ProjectName</a></td>
-                        <td class="text-start">
-                            <a asp-action="Detail" asp-controller="Ticket" asp-route-TicketId="@record.IssueId">
-                               @record.IssueId @record.IssueName
-                            </a>
+                    foreach (var record in Model.TicketsList)
+                    {
+                        i += 1;
+                        <tr>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTicket(@record.Id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash2-fill" viewBox="0 0 16 16">
+                                        <path d="M2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671zm9.89-.69C10.966 2.214 9.578 2 8 2c-1.58 0-2.968.215-3.926.534-.477.16-.795.327-.975.466.18.14.498.307.975.466C5.032 3.786 6.42 4 8 4s2.967-.215 3.926-.534c.477-.16.795-.327.975-.466-.18-.14-.498-.307-.975-.466z" />
+                                    </svg>
+                                </button>
+                            </td>
+                            <td>@i</td>
+                            <td>
+                                <a asp-action="Detail" asp-controller="Project" asp-route-ProjectId="@record.Project.Id" class="text-start">@record.Project.Name</a>
+                            </td>
+                            <td class="text-start">
+                                <a asp-action="Detail" asp-controller="Ticket" asp-route-TicketId="@record.Id">
+                                    @record.Name
+                                </a>
+                                <script>
+                                    function deleteTicket(id) {
+                                        console.log("Try to delete ticket", id);
+                                        fetch(`/Ticket/DeleteTicket?TicketId=${id}`, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data === true) {
+                                                    alert("Ticket deleted successfully!");
+                                                    window.location.reload();
+                                                } else {
+                                                    alert("Failed to delete the ticket.");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                alert("An error occurred.");
+                                            });
+                                    }
+                                </script>
+                            </td>
+                            <td>@record.Status.Name</td>
+                            <td>@record.Informer.Username</td>
+                            <td>@record.ResponsibleGroup.Name</td>
+                            <td>
+                                @if (@record.Responsible.Username == null)
+                                {
+                                    <span>"ยังไม่มีผู้รับผิดชอบ"</span>
+                                }
+                                else
+                                {
+                                    @record.Responsible.Username
+                                }
+                            </td>
+                            <td>@record.CreateDate</td>
+                            <td>
+                                @{
+                                    if (record.DeadlineDate != null)
+                                    {
+                                        if (record.DeadlineDate.Value.Date < DateTime.Now.Date)
+                                        {
+                                            <span class="text-danger">@record.DeadlineDate</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-white">@record.DeadlineDate</span>
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>@record.CloseDate</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr >
+                        <td class="text-center" colspan="11">
+                            Not have any data of ticket yet
                         </td>
-                        <td>@record.IssueStatus | @record.IssueStatusName</td>
-                        <td>@record.InformerName</td>
-                        <td>@record.ResponsibleGroupName</td>
-                        <td>@record.ResponsibleName</td>
-                        <td class="text-center">@record.IssueCreateDate</td>
                     </tr>
                 }
             }
         </tbody>
     </table>
 </div>
+
 

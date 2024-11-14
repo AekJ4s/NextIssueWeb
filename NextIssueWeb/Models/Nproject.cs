@@ -19,5 +19,5 @@ public partial class Nproject
 
     public int UpdateBy { get; set; }
 
-    public virtual ICollection<MergeprojectIssue> MergeprojectIssues { get; set; } = new List<MergeprojectIssue>();
+    public virtual ICollection<Nticket> Ntickets { get; set; } = new List<Nticket>();
 }

@@ -13,5 +13,9 @@ public partial class SystemLicense
 
     public bool IsActive { get; set; }
 
+    public DateTime? ActiveDate { get; set; }
+
+    public DateTime? ExpireDate { get; set; }
+
     public virtual ICollection<SystemCompany> SystemCompanies { get; set; } = new List<SystemCompany>();
 }

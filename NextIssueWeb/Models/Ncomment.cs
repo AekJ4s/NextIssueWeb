@@ -11,5 +11,7 @@ public partial class Ncomment
 
     public int CreateBy { get; set; }
 
-    public int IssueId { get; set; }
+    public int TicketId { get; set; }
+
+    public virtual Nticket Ticket { get; set; } = null!;
 }

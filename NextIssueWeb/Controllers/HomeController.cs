@@ -4,7 +4,7 @@ using NextIssueWeb.Models;
 using NextIssueWeb.Services;
 using System.Diagnostics;
 using System.Security;
-using static NextIssueWeb.Models.Metadata;
+using static NextIssueWeb.Models.ViewModel;
 
 namespace NextIssueWeb.Controllers
 {
@@ -15,7 +15,7 @@ namespace NextIssueWeb.Controllers
         private readonly LoggerSv _lgSv;
         private readonly ProjectSv _pjSv;
         private readonly StatusSv _stSv;
-        private readonly IssueSv _isSv;
+        private readonly TicketSv _tkSv;
         private readonly PositionSv _psSv;
         private readonly ImportanceSv _imSv;
         private readonly PictureSv _pictureSv;
@@ -30,7 +30,7 @@ namespace NextIssueWeb.Controllers
             AccountSv acSv,
             LoggerSv lgSv,
             StatusSv stSv,
-            IssueSv isSv,
+            TicketSv tkSv,
             PositionSv psSv,
             ImportanceSv imSv,
             PictureSv pcSv,
@@ -41,7 +41,7 @@ namespace NextIssueWeb.Controllers
                 _lgSv = lgSv ?? throw new ArgumentNullException(nameof(lgSv));
                 _pjSv = pjSv ?? throw new ArgumentNullException(nameof(pjSv));
                 _stSv = stSv ?? throw new ArgumentNullException(nameof(stSv));
-                _isSv = isSv ?? throw new ArgumentNullException(nameof(isSv));
+                _tkSv = tkSv ?? throw new ArgumentNullException(nameof(tkSv));
                 _psSv = psSv ?? throw new ArgumentNullException(nameof(psSv));
                 _imSv = imSv ?? throw new ArgumentNullException(nameof(imSv));
                 _pictureSv = pcSv ?? throw new ArgumentNullException(nameof(pcSv));
@@ -56,32 +56,35 @@ namespace NextIssueWeb.Controllers
                 var permission = HttpContext.Session.GetString("Permission");
                 if (user != null && token != null)
                 {
-                    Metadata.InterfaceHome interfaceHome = new Metadata.InterfaceHome();
+                    ViewModel model = new ViewModel();
                     var userData = _acSv.GetUserByName(user);
-                    var issueList = _isSv.GetIssueLists().Data;
-                    interfaceHome.TicketCount = issueList.Count;
-                    interfaceHome.TicketCloseCount = issueList.Where(db => db.StatusId == 5).Count();
-                    interfaceHome.OpenTicketCount = issueList.Where(db => db.InformerId == userData.Data.Id).Count();
-                    interfaceHome.CloseTicketCount = issueList.Where(db => db.InformerId == userData.Data.Id && db.StatusId == 5).Count();
-                    interfaceHome.Version = Version;
-
+                    var TicketLists = _tkSv.GetTicketLists().Data;
+                    model.ticketCount = TicketLists.Count;
+                    model.ticketCloseCount = TicketLists.Where(db => db.StatusId == 5).Count();
+                    model.ticketOpenCount = TicketLists.Where(db => db.InformerId == userData.Data.Id).Count();
+                    model.YourticketCloseCount = TicketLists.Where(db => db.InformerId == userData.Data.Id && db.StatusId == 5).Count();
+                    model.ProjectWithTicketsLists = new List<ProjectWithTickets>();
                     #region Count Issue Of Any project
-                    var projectDetailLists = new List<Metadata.NprojectIssueCount>();
-                    var projectLists = _pjSv.GetProjectActiveLists().Data;
-                    foreach(var pjLst in projectLists) 
+                    foreach( var i in _pjSv.GetProjectLists().Data)
                     {
-                        var projectIssueCount = new NprojectIssueCount()
+                        var projectXticket = new ProjectWithTickets()
                         {
-                            ProjectName = pjLst.Name,
-                            IssueCount = _isSv.GetIssueListsByProjectId(pjLst.Id).Data.Count(),
-                            UserCreating = pjLst.CreateBy,
-                            Status = pjLst.Status
+                            ProjectId = i.Id,
+                            ProjectName = i.Name,
+                            ProjectStatus = i.Status,
+                            CreateBy = i.CreateBy,
+                            CreateDate = i.CreateDate.Value,
+                            UpdateBy = i.UpdateBy,
+                            UpdateDate = i.UpdateDate.Value,
+                            TicketLists = _tkSv.GetTicketListsByProjectId(i.Id).Data,
+                            
                         };
-                        projectDetailLists.Add(projectIssueCount);
+                        projectXticket.TicketsCount = projectXticket.TicketLists.Count();
+                        model.ProjectWithTicketsLists.Add(projectXticket);
                     }
                     #endregion
-                    interfaceHome.projectLists = projectDetailLists.OrderByDescending(x=>x.IssueCount).ToList();
-                    return View(interfaceHome);
+
+                    return View(model);
                 }
                 else
                 {

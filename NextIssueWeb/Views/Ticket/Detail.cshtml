@@ -105,11 +105,12 @@
         }
 </style>
 
-@model Metadata.TicketWithProjectAndPicture
+@model ViewModel
 <form asp-action="UpdateTicket"
       asp-controller="Ticket"
       method="post">
     @Html.AntiForgeryToken()
+   
     <div class="container mt-4">
         <!-- เริ่มต้นการ์ด -->
         <div class="card card-transparent">
@@ -118,39 +119,37 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <label for="Project" class="form-label">Project Name</label>
-                        <select class="form-select" asp-for="@Model.ProjectId">
-                            @foreach (var record in Model.ProjectLst)
+                        <select class="form-select" asp-for="Nticket.ProjectId">
+                            @foreach (var record in Model.projectsLists)
                             {
                                 <option value="@record.Id"> @record.Name </option>
                             }
                         </select>
                     </div>
                 </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="ProjectStatus" class="form-label">Project Status</label>
-                        <select class="form-select" asp-for="@Model.StatusProjectId">
-                            @foreach (var record in Model.StatusProjectLst)
-                            {
-                                <option value="@record.Id"> @record.Name </option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
                 <div class="row mb-4">
                     <div class="col-12">
                         <label for="TicketName" class="form-label">Ticket Name</label>
-                        <input class="form-control" id="TicketName" asp-for="@Model.Issue.Name" />
+                        <input class="form-control" id="TicketName" asp-for="@Model.Nticket.Name" />
+                    </div>
+                </div>
+              
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <label for="Deadline" class="form-label">Deadline</label>
+                        <input type="date" class="form-control" id="Deadline" asp-for="@Model.Nticket.DeadlineDate" />
+                    </div>
+                    <div class="col-6">
+                        <label for="CloseDate" class="form-label">CloseDate</label>
+                        <input type="date" class="form-control" id="CloseDate" asp-for="@Model.Nticket.CloseDate" />
                     </div>
                 </div>
 
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="TicketStatus" class="form-label">Ticket Status</label>
-                        <select class="form-select" asp-for="@Model.StatusTicketId">
-                            @foreach (var record in Model.StatusTicketLst)
+                        <select class="form-select" asp-for="Nticket.StatusId">
+                            @foreach (var record in Model.statusLists)
                             {
                                 <option value="@record.Id"> @record.Name </option>
                             }
@@ -160,7 +159,7 @@
 
                 <!-- แกลเลอรีรูปภาพ -->
                 <div class="row mt-3 image-gallery">
-                    @foreach (var image in Model.Files)
+                    @foreach (var image in Model.stringsLists)
                     {
                         <div class="col-md-3 mb-3">
                             <img src="@image" alt="Image" class="img-fluid" />
@@ -170,8 +169,8 @@
 
                 <!-- ปุ่ม Submit -->
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg custom-submit-button">
-                        Update
+                    <button type="submit" class="btn btn-secondary btn-lg custom-submit-button" disabled>
+                        Not open this function ! 
                     </button>
                 </div>
             </div>

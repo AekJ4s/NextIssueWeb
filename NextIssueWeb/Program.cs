@@ -13,7 +13,7 @@ builder.Services.AddScoped<AccountSv>();
 builder.Services.AddScoped<LoggerSv>();
 builder.Services.AddScoped<ProjectSv>();
 builder.Services.AddScoped<StatusSv>();
-builder.Services.AddScoped<IssueSv>();
+builder.Services.AddScoped<TicketSv>();
 builder.Services.AddScoped<PositionSv>();
 builder.Services.AddScoped<ImportanceSv>();
 builder.Services.AddScoped<PictureSv>();

@@ -38,11 +38,12 @@ namespace NextIssueWeb.Controllers
                 var user = HttpContext.Session.GetString("Username");
                 var token = HttpContext.Session.GetString("Token");
                 var permission = HttpContext.Session.GetString("Permission");
+
                 if (user != null && token != null)
                 {
-                    var model = new Metadata.NprojectCreate();
-                    model.StatusLists = _stSv.GetListsStatus(1).Data;
-                    model.Status = 1;
+                    var model = new ViewModel();
+                    model.statusLists = _stSv.GetListsStatusByTaskId(1).Data;
+                    model.statusId = 1;
                     model.CreateDate = DateTime.Now;
                     return PartialView(nameof(popup), model);
 
@@ -61,7 +62,7 @@ namespace NextIssueWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProject(Metadata.NprojectCreate model)
+        public IActionResult CreateProject(ViewModel model)
         {
 
             try
@@ -72,15 +73,19 @@ namespace NextIssueWeb.Controllers
                 var permission = HttpContext.Session.GetString("Permission");
                 if (user != null && token != null)
                 {
-                    model.UserId = int.Parse(id);
-                    var rs = _pjSv.CreateProject(model);
+                    model.Checkbox1 = false;
+                    model.Checkbox2 = false;
+                    model.Nproject.Id = Guid.NewGuid();
+                    model.Nproject.CreateBy = int.Parse(id);
+                    model.Nproject.UpdateBy = int.Parse(id);
+                    var rs = _pjSv.CreateProject(model.Nproject);
                     if (rs.IsSuccess == true)
                     {
-                        var log = new Metadata.NloggerCreate()
+                        var log = new Nlogger()
                         {
                             Controller = Controller,
-                            System_id = 2,
-                            Loguser = int.Parse(id),
+                            SystemId = 2,
+                            LogBy = int.Parse(id),
                             Name = "สร้าง Project @"+ user,
                             CreateDate = DateTime.Now
                         };

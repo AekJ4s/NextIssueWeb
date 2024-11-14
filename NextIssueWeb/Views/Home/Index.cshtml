@@ -6,7 +6,7 @@
     var Token = HttpContextAccessor.HttpContext.Session.GetString("Token");
     var Permission = HttpContextAccessor.HttpContext.Session.GetString("Permission");
 }
-@model Metadata.InterfaceHome
+@model ViewModel
 <div class="container text-center mt-3 align-items-center align-content-center">
     @if(Permission != "Guest")
     {
@@ -21,6 +21,8 @@
                 <canvas id="projectChart" style="min-width: 1000px; height: 500px;"></canvas>
             </div>
         </div>
+       
+
     }
   
 </div>
@@ -399,17 +401,17 @@
     var ticketChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['All Ticket(' + @Model.TicketCount +')',
-            'All Ticket Closed(' + @Model.TicketCloseCount +')',
-            'Your Ticket Open(' + @Model.OpenTicketCount +')',
-            'Your Ticket Closed(' + @Model.CloseTicketCount +')'],
+            labels: ['All Ticket(' + @Model.ticketCount +')',
+            'All Ticket Closed(' + @Model.ticketCloseCount +')',
+            'Your Ticket Open(' + @Model.ticketOpenCount +')',
+            'Your Ticket Closed(' + @Model.YourticketCloseCount +')'],
             datasets: [{
-                label: 'Ticket Overview (' + @Model.TicketCount + ')',
+                label: 'Ticket Overview (' + @Model.ticketCount + ')',
                 data: [
-                    @Model.TicketCount,
-                    @Model.TicketCloseCount,
-                    @Model.OpenTicketCount,
-                    @Model.CloseTicketCount
+                        @Model.ticketCount,
+                        @Model.ticketCloseCount,
+                        @Model.ticketOpenCount,
+                        @Model.YourticketCloseCount
                     ],
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.7)',
@@ -436,27 +438,32 @@
     // กราฟ Project Issues
     var projectCtx = document.getElementById('projectChart').getContext('2d');
     var projectLabels = [
-    @foreach (var record in Model.projectLists)
-    {
-        @: '@record.ProjectName',
-    }
+    @Html.Raw(string.Join(",", Model.ProjectWithTicketsLists.Select(p => $"'{p.ProjectName}'")))
         ];
     var projectData = [
-    @foreach (var record in Model.projectLists)
-    {
-        @: @record.IssueCount,
-    }
+    @string.Join(",", Model.ProjectWithTicketsLists.Select(p => p.TicketsCount))
         ];
+
+    // สร้างสีสำหรับแต่ละบาร์แบบไม่ซ้ำ
+    var backgroundColors = [];
+    var borderColors = [];
+    for (var i = 0; i < projectData.length; i++) {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        backgroundColors.push(`rgba(${r}, ${g}, ${b}, 0.7)`);
+        borderColors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+    }
 
     var projectChart = new Chart(projectCtx, {
         type: 'bar',
         data: {
             labels: projectLabels,
             datasets: [{
-                label: 'Ticket Per Project '+'('+ @Model.projectLists.Count + ')',
+                label: 'Ticket Per Project (' + @Model.ProjectWithTicketsLists.Count + ')',
                 data: projectData,
-                backgroundColor: 'rgba(255, 159, 64, 0.7)',
-                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
                 borderWidth: 1
             }]
         },
@@ -466,3 +473,4 @@
         }
     });
 </script>
+
